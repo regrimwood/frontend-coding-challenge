@@ -66,7 +66,7 @@ cd frontend-coding-challenge
 Then install the dependencies.
 
 ```
-yarn add
+yarn
 ```
 
 Then run dev to start the server.
