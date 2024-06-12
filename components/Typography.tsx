@@ -14,7 +14,7 @@ export default function Typography(props: PropsWithChildren<Props>) {
         <h1
           className={`${
             className ?? ""
-          } text-8xl tracking-tighter leading-tight`}
+          } text-8xl font-medium tracking-tighter leading-tight`}
         >
           {children}
         </h1>

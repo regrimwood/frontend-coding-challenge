@@ -23,7 +23,8 @@ export default function useGetEvents() {
       } catch (error) {
         console.error(error);
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 1000);
+        // setLoading(false);
       }
     };
 

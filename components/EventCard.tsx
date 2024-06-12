@@ -10,7 +10,7 @@ export default function EventCard({ event }: { event: EventBriefModel }) {
   const [imageError, setImageError] = useState<boolean>(false);
 
   return (
-    <li className="block bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="bg-white shadow-lg rounded-xl overflow-hidden">
       <Link href="#" className="cursor-pointer">
         <div className="h-full cursor-pointer">
           <div className="relative aspect-[4/5] w-full">
@@ -30,6 +30,6 @@ export default function EventCard({ event }: { event: EventBriefModel }) {
           </div>
         </div>
       </Link>
-    </li>
+    </div>
   );
 }

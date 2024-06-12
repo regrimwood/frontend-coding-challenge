@@ -6,6 +6,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "framer-motion": "^11.2.10",
     "next": "latest",
     "react": "18.1.0",
     "react-dom": "18.1.0"
