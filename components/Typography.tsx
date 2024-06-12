@@ -27,7 +27,11 @@ export default function Typography(props: PropsWithChildren<Props>) {
       );
     case "h3":
       return (
-        <h3 className={`${className ?? ""} text-3xl tracking-tight`}>
+        <h3
+          className={`${
+            className ?? ""
+          } text-xl font-medium leading-snug tracking-tight`}
+        >
           {children}
         </h3>
       );
