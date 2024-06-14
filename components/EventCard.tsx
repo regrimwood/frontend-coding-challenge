@@ -1,13 +1,16 @@
 import Image from "next/image";
+import Link from "next/link";
 import { EventBriefModel } from "../utils/models/EventModel";
 import { useState } from "react";
+import tailwindConfig from "../tailwind.config";
 import Typography from "./Typography";
-import Link from "next/link";
 
 export default function EventCard({ event }: { event: EventBriefModel }) {
   const { name, imageUrl } = event;
 
   const [imageError, setImageError] = useState<boolean>(false);
+
+  const { md, lg, xl } = tailwindConfig.theme.screens;
 
   return (
     <div className="bg-white shadow-lg rounded-xl overflow-hidden">
@@ -21,6 +24,7 @@ export default function EventCard({ event }: { event: EventBriefModel }) {
               layout="fill"
               objectFit={imageError ? "contain" : "cover"}
               onError={() => setImageError(true)}
+              sizes={`(max-width: ${md}) 100vw, (max-width: ${lg}) 50vw, (max-width: ${xl}) 33.33vw, 20rem`}
             />
           </div>
           <div className="p-4">

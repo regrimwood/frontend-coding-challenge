@@ -1,9 +1,12 @@
-module.exports = {
+import { screens } from "tailwindcss/defaultTheme";
+
+export default {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    screens,
     extend: {
       colors: {
         white: "#FFFDFD",
