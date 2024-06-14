@@ -100,11 +100,8 @@ const Home: NextPage = () => {
                     </Transition>
                   )}
                   {!loading && events.length === 0 && (
-                    <Transition
-                      key="no-events"
-                      className="flex items-center justify-center h-96"
-                    >
-                      <Typography variant="h2">No events found</Typography>
+                    <Transition key="no-events" className="h-96">
+                      <Typography variant="h3">No events found!</Typography>
                     </Transition>
                   )}
                 </AnimatePresence>
