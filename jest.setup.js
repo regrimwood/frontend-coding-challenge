@@ -13,6 +13,12 @@ jest.mock("framer-motion", () => {
       div: ({ children }) => (
         <div className="mocked-framer-motion-div">{children}</div>
       ),
+      ul: ({ children }) => (
+        <div className="mocked-framer-motion-ul">{children}</div>
+      ),
+      li: ({ children }) => (
+        <div className="mocked-framer-motion-li">{children}</div>
+      ),
     },
   };
 });

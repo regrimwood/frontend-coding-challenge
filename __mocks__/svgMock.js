@@ -1,2 +1,1 @@
-const SvgUrl = () => "svgrurl";
-export default SvgUrl;
+module.exports = () => "test-svg";
