@@ -21,8 +21,8 @@ export default function EventCard({ event }: { event: EventBriefModel }) {
               className="absolute"
               src={imageError ? "/iTICKET.svg" : imageUrl}
               alt={name}
-              layout="fill"
-              objectFit={imageError ? "contain" : "cover"}
+              fill
+              style={{ objectFit: imageError ? "contain" : "cover" }}
               onError={() => setImageError(true)}
               sizes={`(max-width: ${md}) 100vw, (max-width: ${lg}) 50vw, (max-width: ${xl}) 33.33vw, 20rem`}
             />
