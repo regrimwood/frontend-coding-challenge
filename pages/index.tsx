@@ -50,7 +50,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="w-full min-h-screen pt-[40vh] pb-36 px-10 bg-black bg-gradient-to-br from-neonBlue from-10% via-violet via-30% to-black to-50%">
+      <main className="w-full min-h-screen pt-[40vh] pb-16 md:pb-36 px-5 md:px-10 bg-black bg-gradient-to-br from-neonBlue from-10% via-violet via-30% to-black to-50%">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -74,7 +74,7 @@ const Home: NextPage = () => {
               animate={{ height: clientHeight }}
               className="rounded-xl bg-white bg-opacity-75 mix-blend-plus-lighter mt-5 border-[1px] border-opacity-75 border-lightPurple"
             >
-              <div ref={ref} className="p-10">
+              <div ref={ref} className="p-6 md:p-10">
                 <AnimatePresence mode="wait">
                   {loading && (
                     <Transition

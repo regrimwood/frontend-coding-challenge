@@ -14,14 +14,16 @@ export default function Typography(props: PropsWithChildren<Props>) {
         <h1
           className={`${
             className ?? ""
-          } text-8xl font-medium tracking-tighter leading-tight`}
+          } text-5xl md:text-8xl font-medium tracking-tighter leading-tight md:leading-tight`}
         >
           {children}
         </h1>
       );
     case "h2":
       return (
-        <h2 className={`${className ?? ""} text-4xl tracking-tight`}>
+        <h2
+          className={`${className ?? ""} text-2xl md:text-4xl tracking-tight`}
+        >
           {children}
         </h2>
       );
@@ -30,14 +32,14 @@ export default function Typography(props: PropsWithChildren<Props>) {
         <h3
           className={`${
             className ?? ""
-          } text-xl font-medium leading-snug tracking-tight`}
+          } text-lg md:text-xl font-medium leading-snug tracking-tight`}
         >
           {children}
         </h3>
       );
     case "h4":
       return (
-        <h4 className={`${className ?? ""} text-2xl tracking-tight`}>
+        <h4 className={`${className ?? ""} text-lg md:text-xl tracking-tight`}>
           {children}
         </h4>
       );

@@ -13,7 +13,7 @@ export default function EventCard({ event }: { event: EventBriefModel }) {
   const { md, lg, xl } = tailwindConfig.theme.screens;
 
   return (
-    <div className="bg-white shadow-lg rounded-xl overflow-hidden">
+    <div className="bg-white shadow-lg rounded-xl overflow-hidden h-full">
       <Link href="#" className="cursor-pointer">
         <div className="h-full cursor-pointer">
           <div className="relative aspect-[4/5] w-full">
