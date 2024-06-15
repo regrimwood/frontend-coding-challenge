@@ -57,7 +57,11 @@ export default function Typography(props: PropsWithChildren<Props>) {
       );
     case "h4":
       return (
-        <h4 className={`${className ?? ""} text-lg md:text-xl tracking-tight`}>
+        <h4
+          className={`${
+            className ?? ""
+          } font-medium text-lg md:text-xl tracking-tight`}
+        >
           {children}
         </h4>
       );

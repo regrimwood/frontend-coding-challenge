@@ -29,7 +29,7 @@ export default function Button({
   return (
     <motion.button
       onClick={onClick}
-      className={`font-medium py-2 px-6 rounded-md border-neonBlue border-2 ${className}`}
+      className={`font-medium text-sm md:text-base py-2 px-4 md:px-6 rounded-md border-neonBlue border-[1px] md:border-2 ${className}`}
       initial="unselected"
       whileHover="selected"
       animate={selected ? "selected" : "unselected"}

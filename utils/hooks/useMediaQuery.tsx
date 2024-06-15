@@ -1,42 +1,19 @@
 import { useEffect, useState } from "react";
 
-function useMediaQuery(query: string): boolean {
-  const getMatches = (q: string): boolean => {
-    if (typeof window !== "undefined") {
-      return window.matchMedia(q).matches;
-    }
-    return false;
-  };
-
-  const [matches, setMatches] = useState<boolean>(getMatches(query));
-
-  function handleChange() {
-    setMatches(getMatches(query));
-  }
+/**
+ * Modified from link below
+ * @see https://github.com/chakra-ui/chakra-ui/issues/3580
+ */
+export default function useMediaQuery(mediaQueryString: string) {
+  const [matches, setMatches] = useState<boolean>();
 
   useEffect(() => {
-    const matchMedia = window.matchMedia(query);
-
-    // Triggered at the first client-side load and if query changes
-    handleChange();
-
-    // Listen matchMedia
-    if (matchMedia.addListener) {
-      matchMedia.addListener(handleChange);
-    } else {
-      matchMedia.addEventListener("change", handleChange);
-    }
-
-    return () => {
-      if (matchMedia.removeListener) {
-        matchMedia.removeListener(handleChange);
-      } else {
-        matchMedia.removeEventListener("change", handleChange);
-      }
-    };
-  }, [query]);
+    const mediaQueryList = window.matchMedia(mediaQueryString);
+    const listener = () => setMatches(!!mediaQueryList.matches);
+    listener();
+    mediaQueryList.addEventListener("change", listener); // updated from .addListener
+    return () => mediaQueryList.removeEventListener("change", listener); // updated from .removeListener
+  }, [mediaQueryString]);
 
   return matches;
 }
-
-export default useMediaQuery;

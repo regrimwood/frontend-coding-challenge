@@ -10,6 +10,7 @@ import { useState } from "react";
 import Image from "next/image";
 import tailwindConfig from "tailwind.config";
 import GAEventDetails from "@/components/GAEventDetails";
+import useResizeObserver from "utils/hooks/useResizeObserver";
 
 interface Props {
   event?: EventModel;
@@ -22,16 +23,18 @@ function Event(props: Props) {
     return null;
   }
 
-  const [imageError, setImageError] = useState<boolean>(false);
-  const [subtitle, setSubtitle] = useState<string>("");
-
   const { name, imageUrl } = event;
   const { md, lg } = tailwindConfig.theme.screens;
+
+  const { ref, clientHeight } = useResizeObserver();
+
+  const [imageError, setImageError] = useState<boolean>(false);
+  const [subtitle, setSubtitle] = useState<string>("");
 
   return (
     <>
       <Head>
-        <title>iTICKET</title>
+        <title>iTICKET | {event.name}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -42,28 +45,33 @@ function Event(props: Props) {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ ease: "easeInOut", duration: 0.5, delay: 0.2 }}
           >
-            <div className="p-6 md:p-10 rounded-xl bg-white bg-opacity-75 mix-blend-plus-lighter mt-5 border-[1px] border-opacity-75 border-lightPurple">
-              <div className="flex justify-between flex-col md:flex-row md:gap-20 mb-10">
-                <div>
-                  <Typography variant="h1" className="mb-5">
-                    {event.name}
-                  </Typography>
-                  <Typography variant="h3">{subtitle}</Typography>
+            <motion.div
+              animate={{ height: clientHeight }}
+              className="rounded-xl bg-white bg-opacity-75 mix-blend-plus-lighter border-[1px] border-opacity-75 border-lightPurple"
+            >
+              <div ref={ref} className="p-6 md:p-10">
+                <div className="flex justify-between flex-col md:flex-row gap-7 md:gap-20 mb-7 md:mb-10">
+                  <div>
+                    <Typography variant="h1" className="mb-5">
+                      {event.name}
+                    </Typography>
+                    <Typography variant="h3">{subtitle}</Typography>
+                  </div>
+                  <div className="relative w-full md:w-1/2 aspect-square bg-white rounded-lg overflow-hidden">
+                    <Image
+                      className="absolute"
+                      src={imageError ? "/iTICKET.svg" : imageUrl}
+                      alt={name}
+                      fill
+                      style={{ objectFit: "contain" }}
+                      onError={() => setImageError(true)}
+                      sizes={`(max-width: ${md}) 100vw, (max-width: ${lg}) 50vw, 40rem`}
+                    />
+                  </div>
                 </div>
-                <div className="relative w-1/2 aspect-square bg-white rounded-lg overflow-hidden">
-                  <Image
-                    className="absolute"
-                    src={imageError ? "/iTICKET.svg" : imageUrl}
-                    alt={name}
-                    fill
-                    style={{ objectFit: "contain" }}
-                    onError={() => setImageError(true)}
-                    sizes={`(max-width: ${md}) 100vw, (max-width: ${lg}) 50vw, 40rem`}
-                  />
-                </div>
+                <GAEventDetails event={event} setSubtitle={setSubtitle} />
               </div>
-              <GAEventDetails event={event} setSubtitle={setSubtitle} />
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </Main>
