@@ -15,6 +15,7 @@ export default {
         purple: "#835EE7",
         violet: "#2F2351",
         black: "#08070B",
+        grey: "#E7E7E7",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

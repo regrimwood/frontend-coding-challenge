@@ -11,13 +11,25 @@ import Typography from "./Typography";
 import { PriceModel } from "utils/models/PriceModel";
 import useMediaQuery from "utils/hooks/useMediaQuery";
 import tailwindConfig from "tailwind.config";
+import Select from "./Select";
 
 function DesktopPriceRow({ price }: { price: PriceModel }) {
+  const [selectedQuantity, setSelectedQuantity] = useState<number>(0);
+
   return (
     <tr>
       <td>{price.priceName}</td>
       <td>${price.price}</td>
-      <td></td>
+      <td>
+        <Select
+          selected={selectedQuantity}
+          onSelect={(v) => setSelectedQuantity(v)}
+          options={Array.from({ length: 11 }, (_, i) => ({
+            label: i.toString(),
+            value: i,
+          }))}
+        />
+      </td>
       <td className="flex justify-end">
         <Button>Add to cart</Button>
       </td>
@@ -47,6 +59,8 @@ function DesktopPriceList({ prices }: { prices: PriceModel[] }) {
 }
 
 function MobilePriceRow({ price }: { price: PriceModel }) {
+  const [selectedQuantity, setSelectedQuantity] = useState<number>(0);
+
   return (
     <li className="block rounded-2xl border-[1px] border-lightPurple p-3">
       <div className="flex gap-3 justify-between items-center mb-3">
@@ -58,7 +72,16 @@ function MobilePriceRow({ price }: { price: PriceModel }) {
         </Typography>
       </div>
       <div className="flex gap-3 justify-between items-center">
-        <div />
+        <div className="  w-2/5">
+          <Select
+            selected={selectedQuantity}
+            onSelect={(v) => setSelectedQuantity(v)}
+            options={Array.from({ length: 11 }, (_, i) => ({
+              label: i.toString(),
+              value: i,
+            }))}
+          />
+        </div>
         <Button>Add to cart</Button>
       </div>
     </li>
