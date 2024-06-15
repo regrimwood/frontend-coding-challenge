@@ -50,7 +50,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="w-full min-h-screen pt-[40vh] pb-16 md:pb-36 px-5 md:px-10 bg-black bg-gradient-to-br from-neonBlue from-10% via-violet via-30% to-black to-50%">
+      <main className="w-full min-h-screen pt-36 md:pt-64 pb-16 md:pb-36 px-5 md:px-10 bg-black bg-gradient-to-br from-neonBlue from-10% via-violet via-30% to-black to-50%">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

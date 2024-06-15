@@ -26,7 +26,7 @@ export default function Navbar() {
         paddingTop: scrollYProgress > 0 ? endPadding : initialPadding,
         transition: { type: "spring", duration: 1, bounce: 0 },
       }}
-      className="fixed w-full pb-3 md:pb-4 px-5 md:px-10 flex items-center justify-between"
+      className="fixed w-full pb-3 md:pb-4 px-5 md:px-10 flex items-center justify-between z-10"
     >
       <motion.div
         initial={{ height: 0 }}
@@ -34,7 +34,7 @@ export default function Navbar() {
           height: scrollYProgress > 0 ? "100%" : "0%",
           transition: { type: "spring", duration: 1, bounce: 0 },
         }}
-        className="top-0 left-0 h-full w-full absolute z-0 bg-black bg-opacity-60 backdrop-blur-sm"
+        className="top-0 left-0 h-full w-full absolute z-0 bg-black bg-opacity-65 backdrop-blur-sm"
       />
       <Link className="z-10" href="/">
         <HeaderLogo className="w-20 h-12 md:w-24 md:h-16" />
