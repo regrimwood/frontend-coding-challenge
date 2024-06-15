@@ -1,4 +1,12 @@
-import { createContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useMemo,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import addGAItemToCart from "utils/cart/addGAItemToCart";
 import RemoveGAItemFromCart from "utils/cart/removeGAItemFromCart";
 import { CartErrorEnum } from "utils/models/CartErrorEnum";
@@ -49,6 +57,8 @@ interface ContextModel {
   // getNumberOfTickets: () => number;
   error?: string;
   loading: boolean;
+  cartOpen: boolean;
+  setCartOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const CartContext = createContext<ContextModel | undefined>(undefined);
@@ -57,6 +67,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartModel[]>([]);
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [cartOpen, setCartOpen] = useState(false);
 
   const addToCart = async (item: TicketInputModel) => {
     setError(undefined);
@@ -162,16 +173,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  const cartState = useMemo(
+    () => ({ cartOpen, setCartOpen, error, loading, cartItems }),
+    [cartOpen, setCartOpen, error, loading, cartItems]
+  );
+
   return (
     <CartContext.Provider
       value={{
-        cartItems,
         addToCart,
         removeFromCart,
         // getCartTotal,
         // getNumberOfTickets,
-        error,
-        loading,
+        ...cartState,
       }}
     >
       {children}

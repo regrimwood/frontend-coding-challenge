@@ -6,8 +6,8 @@ import { CartProvider } from "@/components/CartContext";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
-      <Navbar />
       <CartProvider>
+        <Navbar />
         <Component {...pageProps} />
       </CartProvider>
     </>
