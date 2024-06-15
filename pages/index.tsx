@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Spinner from "../assets/icons/spinner.svg";
 import useResizeObserver from "../utils/hooks/useResizeObserver";
 import Main from "../components/Main";
+import Transition from "../components/AnimationTransition";
 
 const variants = {
   initial: { opacity: 0, y: 20 },
@@ -17,27 +18,6 @@ const variants = {
   },
   exit: { opacity: 0, y: 0 },
 };
-
-function Transition({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <motion.div
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={variants}
-      transition={{ ease: "easeInOut", duration: 0.5 }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 const Home: NextPage = () => {
   // Get events using a hook because in production we would be filtering/paginating.
