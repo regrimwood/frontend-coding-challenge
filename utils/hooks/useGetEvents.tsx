@@ -5,6 +5,7 @@ import { EventBriefModel } from "../models/EventModel";
 export default function useGetEvents() {
   const [events, setEvents] = useState<EventBriefModel[]>([]);
   const [loading, setLoading] = useState(false);
+  let timeoutId: ReturnType<typeof setTimeout>;
 
   useEffect(() => {
     setLoading(true);
@@ -23,11 +24,12 @@ export default function useGetEvents() {
       } catch (error) {
         console.error(error);
       } finally {
-        setLoading(false);
+        timeoutId = setTimeout(() => setLoading(false), 200);
       }
     };
 
     getEvents();
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return { events, loading };

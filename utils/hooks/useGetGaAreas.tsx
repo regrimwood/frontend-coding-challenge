@@ -13,6 +13,7 @@ export default function useGetGaAreas({ ids }: { ids: number[] }) {
 
   useEffect(() => {
     setLoading(true);
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     const getGaAreas = async () => {
       const areas = [];
@@ -51,10 +52,11 @@ export default function useGetGaAreas({ ids }: { ids: number[] }) {
       }
 
       setGaAreas(areas);
-      setLoading(false);
+      timeoutId = setTimeout(() => setLoading(false), 200);
     };
 
     getGaAreas();
+    return () => clearTimeout(timeoutId);
   }, [ids]);
 
   return { gaAreas, loading };
