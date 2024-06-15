@@ -1,7 +1,15 @@
 import { PropsWithChildren } from "react";
 
 interface Props {
-  variant?: "h1" | "h2" | "h3" | "h4" | "body1" | "body2" | "button";
+  variant?:
+    | "headline"
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "body1"
+    | "body2"
+    | "button";
   className?: string;
 }
 
@@ -9,12 +17,22 @@ export default function Typography(props: PropsWithChildren<Props>) {
   const { variant = "body1", className, children } = props;
 
   switch (variant) {
-    case "h1":
+    case "headline":
       return (
         <h1
           className={`${
             className ?? ""
           } text-5xl md:text-8xl font-medium tracking-tighter leading-tight md:leading-tight`}
+        >
+          {children}
+        </h1>
+      );
+    case "h1":
+      return (
+        <h1
+          className={`${
+            className ?? ""
+          } text-4xl md:text-6xl font-medium tracking-tighter leading-tighter md:leading-tighter`}
         >
           {children}
         </h1>

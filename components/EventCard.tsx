@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { EventBriefModel } from "../utils/models/EventModel";
 import tailwindConfig from "../tailwind.config";
 import Typography from "./Typography";
+import { EVENTS_PATH } from "utils/routes";
 
 export default function EventCard({ event }: { event: EventBriefModel }) {
   const { name, imageUrl } = event;
@@ -33,7 +34,7 @@ export default function EventCard({ event }: { event: EventBriefModel }) {
       variants={variants}
       layout
     >
-      <Link href="#" className="cursor-pointer">
+      <Link href={`${EVENTS_PATH}/${event.id}`} className="cursor-pointer">
         <div className="h-full cursor-pointer">
           <div className="relative aspect-[4/5] w-full overflow-hidden">
             <Image
