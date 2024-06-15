@@ -13,7 +13,7 @@ import GAEventDetails from "@/components/GAEventDetails";
 import useResizeObserver from "utils/hooks/useResizeObserver";
 
 interface Props {
-  event?: EventModel;
+  event: EventModel;
 }
 
 function Event(props: Props) {
@@ -80,21 +80,26 @@ function Event(props: Props) {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const slug = `${params?.event}`;
+  try {
+    const slug = `${params?.event}`;
 
-  const event = await getEvent({
-    id: slug,
-  });
+    const event = await getEvent({
+      id: slug,
+    });
 
-  const props: Props = {
-    event,
-  };
+    const props: Props = {
+      event,
+    };
 
-  return {
-    props: { ...props, key: slug },
-    revalidate: REVALIDATE_PAGES,
-    notFound: !event,
-  };
+    return {
+      props: { ...props, key: slug },
+      revalidate: REVALIDATE_PAGES,
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
 };
 
 export const getStaticPaths: GetStaticPaths = async () => ({

@@ -11,9 +11,12 @@ export default async function getEvent({ id }: { id: string }) {
     }
 
     const event: EventModel = await res.json();
+    if (!event) {
+      throw new Error("Event not found");
+    }
 
     return event;
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    throw new Error(error?.message ?? "An error occurred");
   }
 }
