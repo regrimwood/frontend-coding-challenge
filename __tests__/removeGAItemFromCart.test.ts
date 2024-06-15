@@ -1,6 +1,7 @@
 import { GACartModel } from "@/components/CartContext";
 import RemoveGAItemFromCart from "../utils/cart/removeGAItemFromCart";
 import { EventTypeEnum } from "utils/models/EventTypeEnum";
+import { CartErrorEnum } from "utils/models/CartErrorEnum";
 
 describe("RemoveGAItemFromCart", () => {
   const cartItems: GACartModel[] = [
@@ -176,8 +177,14 @@ describe("RemoveGAItemFromCart", () => {
       quantity: 1,
     };
 
-    expect(() => RemoveGAItemFromCart(item1, cartItems)).toThrow();
-    expect(() => RemoveGAItemFromCart(item2, cartItems)).toThrow();
-    expect(() => RemoveGAItemFromCart(item3, cartItems)).toThrow();
+    expect(() => RemoveGAItemFromCart(item1, cartItems)).toThrow(
+      CartErrorEnum.ITEM_NOT_FOUND
+    );
+    expect(() => RemoveGAItemFromCart(item2, cartItems)).toThrow(
+      CartErrorEnum.ITEM_NOT_FOUND
+    );
+    expect(() => RemoveGAItemFromCart(item3, cartItems)).toThrow(
+      CartErrorEnum.ITEM_NOT_FOUND
+    );
   });
 });
