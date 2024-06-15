@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const variants = {
+export const transitionVariants = {
   initial: { opacity: 0, y: 20 },
   animate: {
     opacity: 1,
@@ -22,7 +22,7 @@ export default function Transition({
       initial="initial"
       animate="animate"
       exit="exit"
-      variants={variants}
+      variants={transitionVariants}
       transition={{ ease: "easeInOut", duration: 0.5 }}
       className={className}
     >
