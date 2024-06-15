@@ -47,6 +47,8 @@ interface ContextModel {
   removeFromCart: (item: TicketInputModel) => void;
   // getCartTotal: () => number;
   // getNumberOfTickets: () => number;
+  error?: string;
+  loading: boolean;
 }
 
 export const CartContext = createContext<ContextModel | undefined>(undefined);
@@ -54,9 +56,11 @@ export const CartContext = createContext<ContextModel | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartModel[]>([]);
   const [error, setError] = useState<string | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const addToCart = async (item: TicketInputModel) => {
     setError(undefined);
+    setLoading(true);
 
     try {
       const event = await getEvent({ id: item.eventId.toString() });
@@ -99,13 +103,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error: any) {
       setError(error?.message ?? "An error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
   const removeFromCart = (item: TicketInputModel) => {
-    if (item.gaAreaId) {
-      const newItems = RemoveGAItemFromCart(item, cartItems as GACartModel[]);
-      setCartItems(newItems);
+    try {
+      if (item.gaAreaId) {
+        const newItems = RemoveGAItemFromCart(item, cartItems as GACartModel[]);
+        setCartItems(newItems);
+      }
+    } catch (error: any) {
+      setError(error?.message ?? "An error occurred");
     }
   };
 
@@ -160,6 +170,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         removeFromCart,
         // getCartTotal,
         // getNumberOfTickets,
+        error,
+        loading,
       }}
     >
       {children}
