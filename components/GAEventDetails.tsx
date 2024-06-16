@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { EventModel } from "utils/models/EventModel";
@@ -12,9 +11,67 @@ import { PriceModel } from "utils/models/PriceModel";
 import useMediaQuery from "utils/hooks/useMediaQuery";
 import tailwindConfig from "tailwind.config";
 import Select from "./Select";
+import { useCart } from "./CartContext";
 
-function DesktopPriceRow({ price }: { price: PriceModel }) {
+function AddToCartButton({
+  eventId,
+  gaAreaId,
+  priceId,
+  quantity,
+  setError,
+}: {
+  eventId: number;
+  gaAreaId: number;
+  priceId: number;
+  quantity: number;
+  setError: (error: string) => void;
+}) {
+  const { addToCart } = useCart();
+
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleAddToCart = async () => {
+    if (quantity === 0) return;
+    setLoading(true);
+
+    try {
+      const result = await addToCart({
+        eventId,
+        gaAreaId,
+        priceId,
+        quantity,
+      });
+
+      if (!result) {
+        throw new Error("An error occurred");
+      }
+    } catch (e: any) {
+      setError(e?.message ?? "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-end">
+      <Button loading={loading} onClick={handleAddToCart}>
+        Add to cart
+      </Button>
+    </div>
+  );
+}
+
+function DesktopPriceRow({
+  price,
+  eventId,
+  gaAreaId,
+}: {
+  price: PriceModel;
+  eventId: number;
+  gaAreaId: number;
+}) {
   const [selectedQuantity, setSelectedQuantity] = useState<number>(0);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   return (
     <tr>
@@ -30,14 +87,41 @@ function DesktopPriceRow({ price }: { price: PriceModel }) {
           }))}
         />
       </td>
-      <td className="flex justify-end">
-        <Button>Add to cart</Button>
+      <td className="flex flex-col items-end justify-center">
+        <AddToCartButton
+          eventId={eventId}
+          gaAreaId={gaAreaId}
+          priceId={price.id}
+          quantity={selectedQuantity}
+          setError={setError}
+        />
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <Typography className="text-red-500 p-2" variant="body2">
+                {error}
+              </Typography>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </td>
     </tr>
   );
 }
 
-function DesktopPriceList({ prices }: { prices: PriceModel[] }) {
+function DesktopPriceList({
+  prices,
+  eventId,
+  gaAreaId,
+}: {
+  prices: PriceModel[];
+  eventId: number;
+  gaAreaId: number;
+}) {
   return (
     <table className="w-full border-separate border-spacing-y-10">
       <thead>
@@ -51,15 +135,29 @@ function DesktopPriceList({ prices }: { prices: PriceModel[] }) {
       <tbody>
         {prices?.length > 0 &&
           prices.map((price) => (
-            <DesktopPriceRow key={price.id} price={price} />
+            <DesktopPriceRow
+              key={price.id}
+              price={price}
+              eventId={eventId}
+              gaAreaId={gaAreaId}
+            />
           ))}
       </tbody>
     </table>
   );
 }
 
-function MobilePriceRow({ price }: { price: PriceModel }) {
+function MobilePriceRow({
+  price,
+  eventId,
+  gaAreaId,
+}: {
+  price: PriceModel;
+  eventId: number;
+  gaAreaId: number;
+}) {
   const [selectedQuantity, setSelectedQuantity] = useState<number>(0);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   return (
     <li className="block rounded-2xl border-[1px] border-lightPurple p-3">
@@ -82,17 +180,51 @@ function MobilePriceRow({ price }: { price: PriceModel }) {
             }))}
           />
         </div>
-        <Button>Add to cart</Button>
+        <AddToCartButton
+          eventId={eventId}
+          gaAreaId={gaAreaId}
+          priceId={price.id}
+          quantity={selectedQuantity}
+          setError={setError}
+        />
       </div>
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <Typography className="text-red-500 pt-2" variant="body2">
+              {error}
+            </Typography>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </li>
   );
 }
 
-function MobilePriceList({ prices }: { prices: PriceModel[] }) {
+function MobilePriceList({
+  prices,
+  eventId,
+  gaAreaId,
+}: {
+  prices: PriceModel[];
+  eventId: number;
+  gaAreaId: number;
+}) {
   return (
     <ul className="w-full flex flex-col gap-3">
       {prices?.length > 0 &&
-        prices.map((price) => <MobilePriceRow key={price.id} price={price} />)}
+        prices.map((price) => (
+          <MobilePriceRow
+            key={price.id}
+            price={price}
+            eventId={eventId}
+            gaAreaId={gaAreaId}
+          />
+        ))}
     </ul>
   );
 }
@@ -159,9 +291,17 @@ export default function GAEventDetails({
               </Typography>
 
               {isMd ? (
-                <DesktopPriceList prices={gaAreas[selectedArea]?.prices} />
+                <DesktopPriceList
+                  prices={gaAreas[selectedArea]?.prices}
+                  gaAreaId={gaAreas[selectedArea]?.id}
+                  eventId={event.id}
+                />
               ) : (
-                <MobilePriceList prices={gaAreas[selectedArea]?.prices} />
+                <MobilePriceList
+                  prices={gaAreas[selectedArea]?.prices}
+                  gaAreaId={gaAreas[selectedArea]?.id}
+                  eventId={event.id}
+                />
               )}
             </motion.div>
           </Transition>

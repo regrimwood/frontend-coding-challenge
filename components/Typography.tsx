@@ -73,7 +73,7 @@ export default function Typography(props: PropsWithChildren<Props>) {
       );
     case "body2":
       return (
-        <p className={`${className ?? ""} text-base tracking-tight`}>
+        <p className={`${className ?? ""} text-sm tracking-tight`}>
           {children}
         </p>
       );
