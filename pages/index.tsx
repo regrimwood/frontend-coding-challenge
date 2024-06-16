@@ -1,56 +1,89 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
+import Typography from "../components/Typography";
+import useGetEvents from "../utils/hooks/useGetEvents";
+import EventCard from "../components/EventCard";
+import { AnimatePresence, motion } from "framer-motion";
+import Spinner from "../assets/icons/spinner.svg";
+import useResizeObserver from "../utils/hooks/useResizeObserver";
+import Main from "../components/Main";
+import Transition, {
+  transitionVariants,
+} from "../components/AnimationTransition";
 
 const Home: NextPage = () => {
+  // Get events using a hook because in production we would be filtering/paginating.
+  const { events, loading } = useGetEvents();
+  const { ref, clientHeight } = useResizeObserver();
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+    <>
       <Head>
         <title>iTICKET</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to the{" "}
-          <a
-            className="text-emerald-500"
-            href="https://github.com/iticketnz/frontend-coding-challenge"
+      <Main>
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ ease: "easeInOut", duration: 0.5 }}
           >
-            iTICKET frontend coding challenge!
-          </a>
-        </h1>
+            <Typography
+              variant="headline"
+              className="text-transparent bg-gradient-to-r from-lightPurple to-white bg-clip-text"
+            >
+              Upcoming Events
+            </Typography>
+          </motion.div>
 
-        <p className="mt-3 text-2xl">
-          Get started by editing{" "}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <p className="mt-3 text-2xl">
-          If you haven't already:{" "}
-          <a
-            className="text-emerald-500"
-            href="https://github.com/iticketnz/frontend-coding-challenge/blob/main/README.md"
-            target="_blank"
-            rel="noopener noreferrer"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ ease: "easeInOut", duration: 0.5, delay: 0.2 }}
           >
-            Read the README
-          </a>
-        </p>
-      </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          href="https://www.iticket.co.nz/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image src="/iTICKET.svg" alt="iTICKET Logo" width={32} height={32} />
-        </a>
-      </footer>
-    </div>
+            <motion.div
+              animate={{ height: clientHeight }}
+              className="relative rounded-xl bg-white bg-opacity-75 mix-blend-plus-lighter mt-5 border-[1px] border-opacity-75 border-lightPurple"
+            >
+              <div ref={ref} className="p-6 md:p-10 min-h-36 relative">
+                <AnimatePresence>
+                  {loading && (
+                    <Transition
+                      key="loading"
+                      className="left-0 right-0 top-0 bottom-0 m-auto flex items-center justify-center absolute"
+                    >
+                      <Spinner class="text-violet" />
+                    </Transition>
+                  )}
+                  {!loading && events.length > 0 && (
+                    <Transition key="events">
+                      <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {events.map((event) => (
+                          <motion.li
+                            key={event.id}
+                            className="block"
+                            variants={transitionVariants}
+                          >
+                            <EventCard event={event} />
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </Transition>
+                  )}
+                  {!loading && events.length === 0 && (
+                    <Transition key="no-events" className="h-96 absolute">
+                      <Typography variant="h3">No events found!</Typography>
+                    </Transition>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </Main>
+    </>
   );
 };
 
