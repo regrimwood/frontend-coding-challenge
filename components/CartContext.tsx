@@ -54,8 +54,8 @@ interface ContextModel {
   cartItems: CartModel[];
   addToCart: (item: TicketInputModel) => Promise<boolean | Error>;
   removeFromCart: (item: TicketInputModel) => void;
-  // getCartTotal: () => number;
-  // getNumberOfTickets: () => number;
+  getCartSubtotal: () => number;
+  getNumberOfTickets: () => number;
   cartOpen: boolean;
   setCartOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -135,37 +135,41 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // const getCartTotal = () => {
-  //   return cartItems.reduce((acc, cartItem) => {
-  //     return (
-  //       acc +
-  //       cartItem.gaAreas.reduce((acc, gaArea) => {
-  //         return (
-  //           acc +
-  //           gaArea.tickets.reduce((acc, ticket) => {
-  //             return acc + ticket.price * ticket.quantity;
-  //           }, 0)
-  //         );
-  //       }, 0)
-  //     );
-  //   }, 0);
-  // };
+  const getCartSubtotal = () => {
+    return cartItems.reduce((acc, cartItem) => {
+      return (
+        acc +
+        (cartItem.eventType === EventTypeEnum.GA
+          ? cartItem.gaAreas.reduce((acc, gaArea) => {
+              return (
+                acc +
+                gaArea.tickets.reduce((acc, ticket) => {
+                  return acc + ticket.price * ticket.quantity;
+                }, 0)
+              );
+            }, 0)
+          : 0)
+      );
+    }, 0);
+  };
 
-  // const getNumberOfTickets = () => {
-  //   return cartItems.reduce((acc, cartItem) => {
-  //     return (
-  //       acc +
-  //       cartItem.gaAreas.reduce((acc, gaArea) => {
-  //         return (
-  //           acc +
-  //           gaArea.tickets.reduce((acc, ticket) => {
-  //             return acc + ticket.quantity;
-  //           }, 0)
-  //         );
-  //       }, 0)
-  //     );
-  //   }, 0);
-  // };
+  const getNumberOfTickets = () => {
+    return cartItems.reduce((acc, cartItem) => {
+      return (
+        acc +
+        (cartItem.eventType === EventTypeEnum.GA
+          ? cartItem.gaAreas.reduce((acc, gaArea) => {
+              return (
+                acc +
+                gaArea.tickets.reduce((acc, ticket) => {
+                  return acc + ticket.quantity;
+                }, 0)
+              );
+            }, 0)
+          : 0)
+      );
+    }, 0);
+  };
 
   useEffect(() => {
     const cartItems = localStorage.getItem("cartItems");
@@ -173,6 +177,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       setCartItems(JSON.parse(cartItems));
     }
   }, []);
+
+  useEffect(() => {
+    if (cartOpen && typeof document !== "undefined") {
+      document.body.style.overflowY = "hidden";
+    } else if (typeof document !== "undefined") {
+      document.body.style.overflowY = "auto";
+    }
+  }, [cartOpen]);
 
   const cartState = useMemo(
     () => ({ cartOpen, setCartOpen, cartItems }),
@@ -184,8 +196,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       value={{
         addToCart,
         removeFromCart,
-        // getCartTotal,
-        // getNumberOfTickets,
+        getCartSubtotal,
+        getNumberOfTickets,
         ...cartState,
       }}
     >

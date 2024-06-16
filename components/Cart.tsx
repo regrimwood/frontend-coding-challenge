@@ -7,16 +7,18 @@ import Typography from "./Typography";
 import Transition from "./AnimationTransition";
 import Button from "./Button";
 import CloseIcon from "../assets/icons/close.svg";
+import formatToNZD from "utils/formatToNZD";
 
 export default function Cart() {
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const { cartItems, cartOpen, setCartOpen, removeFromCart } = useCart();
+  const { cartItems, cartOpen, setCartOpen, removeFromCart, getCartSubtotal } =
+    useCart();
   const router = useRouter();
 
   useEffect(() => {
     const onRouteChangeStart = () => {
-      setCartOpen(true);
+      setCartOpen(false);
     };
     router.events.on("routeChangeStart", onRouteChangeStart);
     return () => {
@@ -25,7 +27,6 @@ export default function Cart() {
   }, [router.events, setCartOpen]);
 
   const handleRemove = (item: TicketInputModel) => {
-    console.log(item);
     try {
       removeFromCart(item);
     } catch (e: any) {
@@ -51,7 +52,7 @@ export default function Cart() {
             animate={{ opacity: 1, x: "0%" }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", duration: 0.75, bounce: 0 }}
-            className="fixed right-0 top-0 w-full md:w-auto md:min-w-[500px] h-full bg-white z-50 p-5 md:p-8 shadow-lg"
+            className="fixed right-0 top-0 w-full md:w-auto md:min-w-[500px] h-full bg-white z-50 p-5 md:p-8 shadow-lg flex flex-col overflow-auto"
           >
             <div className="flex justify-between mb-10">
               <Typography variant="h2">Cart</Typography>
@@ -64,8 +65,8 @@ export default function Cart() {
             </div>
             <AnimatePresence mode="wait">
               {cartItems?.length > 0 ? (
-                <Transition key="cart-items">
-                  <ul>
+                <Transition key="cart-items" className="flex flex-col h-full">
+                  <ul className="flex-1">
                     {cartItems.map((item) => (
                       <li key={item.eventId}>
                         <Typography variant="h3" className="mb-3 text-violet">
@@ -115,7 +116,9 @@ export default function Cart() {
                                           {ticket.quantity > 2 ? "s" : ""}
                                         </Typography>
                                         <Typography variant="body1">
-                                          ${ticket.price * ticket.quantity}
+                                          {formatToNZD(
+                                            ticket.price * ticket.quantity
+                                          )}
                                         </Typography>
                                       </div>
                                     </li>
@@ -134,6 +137,19 @@ export default function Cart() {
                       </li>
                     ))}
                   </ul>
+                  <div className="mt-auto pt-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <Typography variant="body1" className="font-medium">
+                        Subtotal:
+                      </Typography>
+                      <Typography variant="body1">
+                        {formatToNZD(getCartSubtotal())}
+                      </Typography>
+                    </div>
+                    <Button reverse className="w-full" href="/">
+                      Checkout
+                    </Button>
+                  </div>
                 </Transition>
               ) : (
                 <Transition
