@@ -10,14 +10,43 @@ import Spinner from "../assets/icons/spinner.svg";
 import formatToNZD from "utils/formatToNZD";
 import Button from "./Button";
 import CloseIcon from "../assets/icons/close.svg";
+import { useCart } from "./CartContext";
 
 function SeatPopup({
   seat,
   setSelectedSeat,
+  eventId,
 }: {
   seat: AllocatedSeatWithPricesModel;
   setSelectedSeat: (seat: AllocatedSeatWithPricesModel | undefined) => void;
+  eventId: number;
 }) {
+  const { addToCart } = useCart();
+
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleAddToCart = async (priceId: number) => {
+    setLoading(true);
+
+    try {
+      const result = await addToCart({
+        eventId,
+        seatId: seat.id,
+        priceId,
+        quantity: 1,
+      });
+
+      if (!result) {
+        throw new Error("An error occurred");
+      }
+    } catch (e: any) {
+      setError(e?.message ?? "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-fit md:min-w-56 absolute z-10 top-3 md:top-auto left-0 right-0 mx-auto md:bottom-[calc(100%+10px)] md:left-full md:right-full md:[transform:translateX(calc(-50%-10px))] p-3 rounded-xl bg-white shadow-[0px_2px_15px_0px_rgba(0,0,0,0.3)] md:before:absolute md:before:content-[''] md:before:w-0 before:h-0 before:top-full before:left-[calc(50%-5px)] md:before:border-[5px] md:before:border-transparent md:before:border-t-white md:before:border-b-0 md:before:drop-shadow-lg">
       <div className="flex justify-between mb-3">
@@ -37,6 +66,7 @@ function SeatPopup({
           <Button
             key={price.id}
             className="text-sm font-normal w-full md:border-[1px] md:px-3"
+            onClick={() => handleAddToCart(price.id)}
           >
             <span className="w-full flex justify-between text-sm">
               <span>{price.priceName}</span>
@@ -53,10 +83,12 @@ function Seat({
   seat,
   isSelected,
   setSelectedSeat,
+  eventId,
 }: {
   seat: AllocatedSeatWithPricesModel;
   isSelected: boolean;
   setSelectedSeat: (seat: AllocatedSeatWithPricesModel | undefined) => void;
+  eventId: number;
 }) {
   let seatColour = "bg-green-500";
   if (seat.status === AllocatedSeatStatusEnum.PENDING) {
@@ -72,7 +104,11 @@ function Seat({
     <div className="md:relative">
       <AnimatePresence>
         {isSelected && seat.status === AllocatedSeatStatusEnum.AVAILABLE && (
-          <SeatPopup seat={seat} setSelectedSeat={setSelectedSeat} />
+          <SeatPopup
+            seat={seat}
+            setSelectedSeat={setSelectedSeat}
+            eventId={eventId}
+          />
         )}
       </AnimatePresence>
       <button
@@ -155,6 +191,7 @@ export default function AllocatedEventDetails({
                       seat={seat}
                       isSelected={selectedSeat?.id === seat.id}
                       setSelectedSeat={setSelectedSeat}
+                      eventId={event.id}
                     />
                   ))}
                 </div>

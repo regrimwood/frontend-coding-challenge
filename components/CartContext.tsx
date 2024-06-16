@@ -8,7 +8,9 @@ import {
   SetStateAction,
   useContext,
 } from "react";
+import addAllocatedItemToCart from "utils/cart/addAllocatedItemToCart";
 import addGAItemToCart from "utils/cart/addGAItemToCart";
+import RemoveAllocatedItemFromCart from "utils/cart/removeAllocatedItemFromCart";
 import RemoveGAItemFromCart from "utils/cart/removeGAItemFromCart";
 import { CartErrorEnum } from "utils/models/CartErrorEnum";
 import { EventTypeEnum } from "utils/models/EventTypeEnum";
@@ -16,10 +18,12 @@ import { PriceModel } from "utils/models/PriceModel";
 import getEvent from "utils/queries/getEvent";
 import getGAArea from "utils/queries/getGAArea";
 import getPrice from "utils/queries/getPrice";
+import getSeat from "utils/queries/getSeat";
 
 export interface TicketInputModel {
   eventId: number;
   gaAreaId?: number;
+  seatId?: number;
   priceId: number;
   quantity: number;
 }
@@ -34,8 +38,9 @@ export interface GACartModel extends BaseCartModel {
   gaAreas: GAAreaCartModel[];
 }
 
-interface AllocatedCartModel extends BaseCartModel {
+export interface AllocatedCartModel extends BaseCartModel {
   eventType: EventTypeEnum.ALLOCATED;
+  seats: AllocatedTicketModel[];
 }
 
 export type CartModel = GACartModel | AllocatedCartModel;
@@ -43,11 +48,17 @@ export type CartModel = GACartModel | AllocatedCartModel;
 export interface GAAreaCartModel {
   gaAreaId: number;
   gaAreaName: string;
-  tickets: TicketModel[];
+  tickets: GATicketModel[];
 }
 
-export interface TicketModel extends PriceModel {
+export interface GATicketModel extends PriceModel {
   quantity: number;
+}
+
+export interface AllocatedTicketModel extends PriceModel {
+  seatRow: string;
+  seatColumn: number;
+  seatId: number;
 }
 
 interface ContextModel {
@@ -76,6 +87,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addToCart = async (item: TicketInputModel) => {
     try {
+      const gaCartItems = cartItems.filter(
+        (v) => v.eventType === EventTypeEnum.GA
+      );
+      const allocatedCartItems = cartItems.filter(
+        (v) => v.eventType === EventTypeEnum.ALLOCATED
+      );
+
       const event = await getEvent({ id: item.eventId.toString() });
       if (!event) {
         throw new Error(CartErrorEnum.DATA_NOT_FOUND);
@@ -106,14 +124,42 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
         const newItems = addGAItemToCart(
           item,
-          cartItems as GACartModel[],
+          gaCartItems as GACartModel[],
           event,
           gaArea,
           price
         );
 
-        setCartItems(newItems);
-        localStorage.setItem("cartItems", JSON.stringify(newItems));
+        const newCart = [...allocatedCartItems, ...newItems];
+        setCartItems([...allocatedCartItems, ...newItems]);
+        localStorage.setItem("cartItems", JSON.stringify(newCart));
+      } else {
+        const seat = await getSeat({ id: item.priceId });
+        if (!seat) {
+          throw new Error(CartErrorEnum.DATA_NOT_FOUND);
+        }
+
+        const priceId = seat.priceIds.find((v) => v === item.priceId);
+        if (!priceId) {
+          throw new Error(CartErrorEnum.DATA_NOT_FOUND);
+        }
+
+        const price = await getPrice({ id: priceId });
+        if (!price) {
+          throw new Error(CartErrorEnum.DATA_NOT_FOUND);
+        }
+
+        const newItems = addAllocatedItemToCart(
+          item,
+          allocatedCartItems as AllocatedCartModel[],
+          event,
+          seat,
+          price
+        );
+
+        const newCart = [...gaCartItems, ...newItems];
+        setCartItems(newCart);
+        localStorage.setItem("cartItems", JSON.stringify(newCart));
       }
 
       setCartOpen(true);
@@ -125,10 +171,31 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const removeFromCart = (item: TicketInputModel) => {
     try {
+      const gaCartItems = cartItems.filter(
+        (v) => v.eventType === EventTypeEnum.GA
+      );
+      const allocatedCartItems = cartItems.filter(
+        (v) => v.eventType === EventTypeEnum.ALLOCATED
+      );
+
       if (item.gaAreaId) {
-        const newItems = RemoveGAItemFromCart(item, cartItems as GACartModel[]);
-        setCartItems(newItems);
-        localStorage.setItem("cartItems", JSON.stringify(newItems));
+        const newItems = RemoveGAItemFromCart(
+          item,
+          gaCartItems as GACartModel[]
+        );
+
+        const newCart = [...allocatedCartItems, ...newItems];
+        setCartItems(newCart);
+        localStorage.setItem("cartItems", JSON.stringify(newCart));
+      } else {
+        const newItems = RemoveAllocatedItemFromCart(
+          item,
+          allocatedCartItems as AllocatedCartModel[]
+        );
+
+        const newCart = [...gaCartItems, ...newItems];
+        setCartItems(newCart);
+        localStorage.setItem("cartItems", JSON.stringify(newCart));
       }
     } catch (error: any) {
       throw new Error(error?.message ?? "An error occurred");
@@ -148,7 +215,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 }, 0)
               );
             }, 0)
-          : 0)
+          : cartItem.seats.reduce((acc, seat) => {
+              return acc + seat.price;
+            }, 0))
       );
     }, 0);
   };
@@ -166,7 +235,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 }, 0)
               );
             }, 0)
-          : 0)
+          : cartItem.seats.length)
       );
     }, 0);
   };
