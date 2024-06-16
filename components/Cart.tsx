@@ -105,7 +105,8 @@ export default function Cart() {
                                             })
                                           }
                                         >
-                                          Remove x
+                                          Remove
+                                          <CloseIcon className="w-4 h-4 inline-block ml-1" />
                                         </button>
                                       </div>
                                       <div className="flex justify-between">
