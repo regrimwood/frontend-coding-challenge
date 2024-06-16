@@ -12,6 +12,7 @@ import useMediaQuery from "utils/hooks/useMediaQuery";
 import tailwindConfig from "tailwind.config";
 import Select from "./Select";
 import { useCart } from "./CartContext";
+import formatToNZD from "utils/formatToNZD";
 
 function AddToCartButton({
   eventId,
@@ -76,7 +77,7 @@ function DesktopPriceRow({
   return (
     <tr>
       <td>{price.priceName}</td>
-      <td>${price.price}</td>
+      <td>{formatToNZD(price.price)}</td>
       <td>
         <Select
           selected={selectedQuantity}
@@ -166,7 +167,7 @@ function MobilePriceRow({
           {price.priceName}
         </Typography>
         <Typography variant="body2" className="text-violet">
-          ${price.price}
+          {formatToNZD(price.price)}
         </Typography>
       </div>
       <div className="flex gap-3 justify-between items-center">
