@@ -1,4 +1,5 @@
 import { AllocatedSeatStatusEnum } from "./AllocatedSeatStatusEnum";
+import { PriceModel } from "./PriceModel";
 
 export interface AllocatedSeatModel {
   id: number;
@@ -8,4 +9,8 @@ export interface AllocatedSeatModel {
   seatY: number;
   priceIds: number[];
   status: AllocatedSeatStatusEnum;
+}
+
+export interface AllocatedSeatWithPricesModel extends AllocatedSeatModel {
+  prices: PriceModel[];
 }

@@ -46,6 +46,7 @@ export default function Button({
     >
       <motion.div
         className="absolute h-full w-full top-0 left-0 flex items-center justify-center"
+        initial={{ opacity: 0 }}
         animate={{ opacity: loading ? 1 : 0 }}
       >
         <Spinner className="w-5 h-5" />

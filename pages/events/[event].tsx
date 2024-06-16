@@ -11,6 +11,8 @@ import Image from "next/image";
 import tailwindConfig from "tailwind.config";
 import GAEventDetails from "@/components/GAEventDetails";
 import useResizeObserver from "utils/hooks/useResizeObserver";
+import { EventTypeEnum } from "utils/models/EventTypeEnum";
+import AllocatedEventDetails from "@/components/AllocatedEventDetails";
 
 interface Props {
   event: EventModel;
@@ -69,7 +71,14 @@ function Event(props: Props) {
                     />
                   </div>
                 </div>
-                <GAEventDetails event={event} setSubtitle={setSubtitle} />
+                {event.type === EventTypeEnum.GA ? (
+                  <GAEventDetails event={event} setSubtitle={setSubtitle} />
+                ) : (
+                  <AllocatedEventDetails
+                    event={event}
+                    setSubtitle={setSubtitle}
+                  />
+                )}
               </div>
             </motion.div>
           </motion.div>
