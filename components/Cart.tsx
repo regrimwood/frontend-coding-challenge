@@ -172,7 +172,7 @@ export default function Cart() {
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-auto pt-5 flex flex-col gap-4">
+                  <div className="mt-auto pt-5 flex flex-col gap-4 pb-5">
                     <AnimatePresence>
                       {error && (
                         <Transition key="error">

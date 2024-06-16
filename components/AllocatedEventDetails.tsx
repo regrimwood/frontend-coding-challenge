@@ -11,6 +11,7 @@ import formatToNZD from "utils/formatToNZD";
 import Button from "./Button";
 import CloseIcon from "../assets/icons/close.svg";
 import { useCart } from "./CartContext";
+import { EventTypeEnum } from "utils/models/EventTypeEnum";
 
 function SeatPopup({
   seat,
@@ -92,14 +93,16 @@ function Seat({
   isSelected,
   setSelectedSeat,
   eventId,
+  isInCart,
 }: {
   seat: AllocatedSeatWithPricesModel;
   isSelected: boolean;
   setSelectedSeat: (seat: AllocatedSeatWithPricesModel | undefined) => void;
   eventId: number;
+  isInCart: boolean;
 }) {
   let seatColour = "bg-green-500";
-  if (seat.status === AllocatedSeatStatusEnum.PENDING) {
+  if (seat.status === AllocatedSeatStatusEnum.PENDING || isInCart) {
     seatColour = "bg-red-500";
   } else if (
     seat.status === AllocatedSeatStatusEnum.SOLD ||
@@ -111,16 +114,18 @@ function Seat({
   return (
     <div className="md:relative">
       <AnimatePresence>
-        {isSelected && seat.status === AllocatedSeatStatusEnum.AVAILABLE && (
-          <SeatPopup
-            seat={seat}
-            setSelectedSeat={setSelectedSeat}
-            eventId={eventId}
-          />
-        )}
+        {isSelected &&
+          seat.status === AllocatedSeatStatusEnum.AVAILABLE &&
+          !isInCart && (
+            <SeatPopup
+              seat={seat}
+              setSelectedSeat={setSelectedSeat}
+              eventId={eventId}
+            />
+          )}
       </AnimatePresence>
       <button
-        disabled={seat.status !== AllocatedSeatStatusEnum.AVAILABLE}
+        disabled={seat.status !== AllocatedSeatStatusEnum.AVAILABLE || isInCart}
         onClick={() => setSelectedSeat(seat)}
         className={`${seatColour} w-3 h-3 md:w-5 md:h-5 rounded-full`}
       />
@@ -138,6 +143,8 @@ export default function AllocatedEventDetails({
   const [selectedSeat, setSelectedSeat] = useState<
     AllocatedSeatWithPricesModel | undefined
   >(undefined);
+
+  const { cartItems } = useCart();
 
   const { seats, loading } = useGetAllocatedSeats({
     ids: event.allocatedSeatIds,
@@ -167,6 +174,15 @@ export default function AllocatedEventDetails({
     });
     return rows;
   }, [seats]);
+
+  const isItemInCart = (seat: AllocatedSeatWithPricesModel) => {
+    return cartItems.some(
+      (cartItem) =>
+        cartItem.eventType === EventTypeEnum.ALLOCATED &&
+        cartItem.eventId === event.id &&
+        cartItem.seats.find((v) => v.seatId === seat.id)
+    );
+  };
 
   return (
     <div className="bg-white rounded-lg px-3 py-5 md:px-8 md:py-8">
@@ -200,6 +216,7 @@ export default function AllocatedEventDetails({
                       isSelected={selectedSeat?.id === seat.id}
                       setSelectedSeat={setSelectedSeat}
                       eventId={event.id}
+                      isInCart={isItemInCart(seat)}
                     />
                   ))}
                 </div>
