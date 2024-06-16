@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import tailwindConfig from "tailwind.config";
 import alpha from "utils/alpha";

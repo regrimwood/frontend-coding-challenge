@@ -254,7 +254,7 @@ export default function GAEventDetails({
       });
       setSubtitle(`$${lowestPrice.price} - $${highestPrice.price}`);
     }
-  }, [gaAreas]);
+  }, [gaAreas, setSubtitle]);
 
   return (
     <div className="relative">

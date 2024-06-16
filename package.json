@@ -4,11 +4,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint './**/*.tsx'"
   },
   "dependencies": {
     "@babel/core": "^7.8.0",
     "@svgr/webpack": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "eslint": "^8.51.0",
+    "eslint-config-next": "^13.5.4",
     "framer-motion": "^11.2.10",
     "jest-environment-jsdom": "^29.7.0",
     "next": "^14.2.4",

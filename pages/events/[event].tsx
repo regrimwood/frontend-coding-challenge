@@ -20,10 +20,6 @@ interface Props {
 
 function Event(props: Props) {
   const { event } = props;
-  // notFound from getStaticProps triggers
-  if (!event) {
-    return null;
-  }
 
   const { name, imageUrl } = event;
   const { md, lg } = tailwindConfig.theme.screens;

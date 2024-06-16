@@ -162,7 +162,7 @@ export default function AllocatedEventDetails({
 
       setSubtitle(`$${lowestPrice.price} - $${highestPrice.price}`);
     }
-  }, [seats]);
+  }, [seats, setSubtitle]);
 
   const groupedSeats = useMemo(() => {
     const rows: { [key: string]: AllocatedSeatWithPricesModel[] } = {};

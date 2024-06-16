@@ -200,16 +200,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return (
         acc +
         (cartItem.eventType === EventTypeEnum.GA
-          ? cartItem.gaAreas.reduce((acc, gaArea) => {
+          ? cartItem.gaAreas.reduce((gaAcc, gaArea) => {
               return (
-                acc +
-                gaArea.tickets.reduce((acc, ticket) => {
-                  return acc + ticket.price * ticket.quantity;
+                gaAcc +
+                gaArea.tickets.reduce((ticketAcc, ticket) => {
+                  return ticketAcc + ticket.price * ticket.quantity;
                 }, 0)
               );
             }, 0)
-          : cartItem.seats.reduce((acc, seat) => {
-              return acc + seat.price;
+          : cartItem.seats.reduce((seatAcc, seat) => {
+              return seatAcc + seat.price;
             }, 0))
       );
     }, 0);
@@ -220,11 +220,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return (
         acc +
         (cartItem.eventType === EventTypeEnum.GA
-          ? cartItem.gaAreas.reduce((acc, gaArea) => {
+          ? cartItem.gaAreas.reduce((gaAcc, gaArea) => {
               return (
-                acc +
-                gaArea.tickets.reduce((acc, ticket) => {
-                  return acc + ticket.quantity;
+                gaAcc +
+                gaArea.tickets.reduce((ticketAcc, ticket) => {
+                  return ticketAcc + ticket.quantity;
                 }, 0)
               );
             }, 0)
@@ -234,9 +234,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const cartItems = localStorage.getItem("cartItems");
-    if (cartItems) {
-      setCartItems(JSON.parse(cartItems));
+    const storedCartItems = localStorage.getItem("cartItems");
+    if (storedCartItems) {
+      setCartItems(JSON.parse(storedCartItems));
     }
   }, []);
 
