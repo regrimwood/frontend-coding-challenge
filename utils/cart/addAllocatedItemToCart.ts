@@ -7,6 +7,7 @@ import { CartErrorEnum } from "../models/CartErrorEnum";
 import { EventModel } from "../models/EventModel";
 import { EventTypeEnum } from "../models/EventTypeEnum";
 import { PriceModel } from "../models/PriceModel";
+import { AllocatedSeatStatusEnum } from "utils/models/AllocatedSeatStatusEnum";
 
 export default function addAllocatedItemToCart(
   item: TicketInputModel,
@@ -15,6 +16,10 @@ export default function addAllocatedItemToCart(
   seat: AllocatedSeatModel,
   price: PriceModel
 ): AllocatedCartModel[] {
+  if (seat.status !== AllocatedSeatStatusEnum.AVAILABLE) {
+    throw new Error(CartErrorEnum.SEAT_NOT_AVAILABLE);
+  }
+
   const eventInCart = cartItems.find(
     (cartItem) => cartItem.eventId === item.eventId
   );

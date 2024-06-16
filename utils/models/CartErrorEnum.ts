@@ -5,4 +5,5 @@ export enum CartErrorEnum {
   CAPACITY_EXCEEDED = "Not enough tickets available!",
   ITEM_NOT_FOUND = "Item not found in cart!",
   SEAT_ALREADY_IN_CART = "Seat already in cart",
+  SEAT_NOT_AVAILABLE = "Seat not available",
 }
