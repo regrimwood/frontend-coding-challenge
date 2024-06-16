@@ -4,6 +4,7 @@ import {
   AllocatedSeatModel,
   AllocatedSeatWithPricesModel,
 } from "utils/models/AllocatedSeatModel";
+import { PriceModel } from "utils/models/PriceModel";
 
 export default function useGetAllocatedSeats({ ids }: { ids: number[] }) {
   const [seats, setSeats] = useState<AllocatedSeatWithPricesModel[]>([]);
@@ -15,9 +16,10 @@ export default function useGetAllocatedSeats({ ids }: { ids: number[] }) {
 
     const getSeats = async () => {
       const newSeats = [];
+      const allPricesList: PriceModel[] = [];
 
       for (let id of ids) {
-        const prices = [];
+        const seatPrices = [];
 
         try {
           const url = `${API_URL}/allocated-seats/${id}`;
@@ -31,6 +33,13 @@ export default function useGetAllocatedSeats({ ids }: { ids: number[] }) {
 
           if (seat.priceIds?.length) {
             for (let priceId of seat.priceIds) {
+              const savedPrice = allPricesList.find((v) => v.id === priceId);
+
+              if (savedPrice) {
+                seatPrices.push(savedPrice);
+                continue;
+              }
+
               const priceUrl = `${API_URL}/prices/${priceId}`;
               const priceRes = await fetch(priceUrl);
 
@@ -39,11 +48,12 @@ export default function useGetAllocatedSeats({ ids }: { ids: number[] }) {
               }
 
               const price = await priceRes.json();
-              prices.push(price);
+              seatPrices.push(price);
+              allPricesList.push(price);
             }
           }
 
-          newSeats.push({ ...seat, prices });
+          newSeats.push({ ...seat, prices: seatPrices });
         } catch (error) {
           console.error(error);
         }
