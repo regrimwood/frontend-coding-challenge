@@ -52,12 +52,10 @@ export interface TicketModel extends PriceModel {
 
 interface ContextModel {
   cartItems: CartModel[];
-  addToCart: (item: TicketInputModel) => void;
+  addToCart: (item: TicketInputModel) => Promise<boolean | Error>;
   removeFromCart: (item: TicketInputModel) => void;
   // getCartTotal: () => number;
   // getNumberOfTickets: () => number;
-  error?: string;
-  loading: boolean;
   cartOpen: boolean;
   setCartOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -74,14 +72,9 @@ export const CartContext = createContext<ContextModel | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartModel[]>([]);
-  const [error, setError] = useState<string | undefined>();
-  const [loading, setLoading] = useState<boolean>(false);
   const [cartOpen, setCartOpen] = useState(false);
 
   const addToCart = async (item: TicketInputModel) => {
-    setError(undefined);
-    setLoading(true);
-
     try {
       const event = await getEvent({ id: item.eventId.toString() });
       if (!event) {
@@ -120,11 +113,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         );
 
         setCartItems(newItems);
+        localStorage.setItem("cartItems", JSON.stringify(newItems));
       }
+
+      setCartOpen(true);
+      return true;
     } catch (error: any) {
-      setError(error?.message ?? "An error occurred");
-    } finally {
-      setLoading(false);
+      throw new Error(error?.message ?? "An error occurred");
     }
   };
 
@@ -133,9 +128,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       if (item.gaAreaId) {
         const newItems = RemoveGAItemFromCart(item, cartItems as GACartModel[]);
         setCartItems(newItems);
+        localStorage.setItem("cartItems", JSON.stringify(newItems));
       }
     } catch (error: any) {
-      setError(error?.message ?? "An error occurred");
+      throw new Error(error?.message ?? "An error occurred");
     }
   };
 
@@ -172,10 +168,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   // };
 
   useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  useEffect(() => {
     const cartItems = localStorage.getItem("cartItems");
     if (cartItems) {
       setCartItems(JSON.parse(cartItems));
@@ -183,8 +175,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const cartState = useMemo(
-    () => ({ cartOpen, setCartOpen, error, loading, cartItems }),
-    [cartOpen, setCartOpen, error, loading, cartItems]
+    () => ({ cartOpen, setCartOpen, cartItems }),
+    [cartOpen, setCartOpen, cartItems]
   );
 
   return (
