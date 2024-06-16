@@ -4,7 +4,7 @@ import {
   TicketInputModel,
 } from "../../components/CartContext";
 
-export default function RemoveAllocatedItemFromCart(
+export default function removeAllocatedItemFromCart(
   item: TicketInputModel,
   cartItems: AllocatedCartModel[]
 ) {

@@ -1,7 +1,7 @@
 import { CartErrorEnum } from "utils/models/CartErrorEnum";
 import { GACartModel, TicketInputModel } from "../../components/CartContext";
 
-export default function RemoveGAItemFromCart(
+export default function removeGAItemFromCart(
   item: TicketInputModel,
   cartItems: GACartModel[]
 ) {

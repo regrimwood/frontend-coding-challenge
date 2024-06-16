@@ -10,8 +10,8 @@ import {
 } from "react";
 import addAllocatedItemToCart from "utils/cart/addAllocatedItemToCart";
 import addGAItemToCart from "utils/cart/addGAItemToCart";
-import RemoveAllocatedItemFromCart from "utils/cart/removeAllocatedItemFromCart";
-import RemoveGAItemFromCart from "utils/cart/removeGAItemFromCart";
+import removeAllocatedItemFromCart from "utils/cart/removeAllocatedItemFromCart";
+import removeGAItemFromCart from "utils/cart/removeGAItemFromCart";
 import { CartErrorEnum } from "utils/models/CartErrorEnum";
 import { EventTypeEnum } from "utils/models/EventTypeEnum";
 import { PriceModel } from "utils/models/PriceModel";
@@ -179,7 +179,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       );
 
       if (item.gaAreaId) {
-        const newItems = RemoveGAItemFromCart(
+        const newItems = removeGAItemFromCart(
           item,
           gaCartItems as GACartModel[]
         );
@@ -188,7 +188,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setCartItems(newCart);
         localStorage.setItem("cartItems", JSON.stringify(newCart));
       } else {
-        const newItems = RemoveAllocatedItemFromCart(
+        const newItems = removeAllocatedItemFromCart(
           item,
           allocatedCartItems as AllocatedCartModel[]
         );

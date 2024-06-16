@@ -1,8 +1,7 @@
 import { AllocatedCartModel, GACartModel } from "../components/CartContext";
-import RemoveGAItemFromCart from "../utils/cart/removeGAItemFromCart";
 import { EventTypeEnum } from "utils/models/EventTypeEnum";
 import { CartErrorEnum } from "utils/models/CartErrorEnum";
-import RemoveAllocatedItemFromCart from "utils/cart/removeAllocatedItemFromCart";
+import removeAllocatedItemFromCart from "utils/cart/removeAllocatedItemFromCart";
 
 describe("RemoveGAItemFromCart", () => {
   const cartItems: AllocatedCartModel[] = [
@@ -54,7 +53,7 @@ describe("RemoveGAItemFromCart", () => {
       quantity: 1,
     };
 
-    const updatedCartItems = RemoveAllocatedItemFromCart(item, cartItems);
+    const updatedCartItems = removeAllocatedItemFromCart(item, cartItems);
 
     expect(updatedCartItems).toEqual([
       {
@@ -98,7 +97,7 @@ describe("RemoveGAItemFromCart", () => {
       quantity: 1,
     };
 
-    const updatedCartItems = RemoveAllocatedItemFromCart(item, cartItems);
+    const updatedCartItems = removeAllocatedItemFromCart(item, cartItems);
 
     expect(updatedCartItems).toEqual([
       {
@@ -147,13 +146,13 @@ describe("RemoveGAItemFromCart", () => {
       quantity: 1,
     };
 
-    expect(() => RemoveAllocatedItemFromCart(item1, cartItems)).toThrow(
+    expect(() => removeAllocatedItemFromCart(item1, cartItems)).toThrow(
       CartErrorEnum.ITEM_NOT_FOUND
     );
-    expect(() => RemoveAllocatedItemFromCart(item2, cartItems)).toThrow(
+    expect(() => removeAllocatedItemFromCart(item2, cartItems)).toThrow(
       CartErrorEnum.ITEM_NOT_FOUND
     );
-    expect(() => RemoveAllocatedItemFromCart(item3, cartItems)).toThrow(
+    expect(() => removeAllocatedItemFromCart(item3, cartItems)).toThrow(
       CartErrorEnum.ITEM_NOT_FOUND
     );
   });
