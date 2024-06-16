@@ -13,6 +13,18 @@ export default function addGAItemToCart(
   gaArea: GeneralAdmissionAreaModel,
   price: PriceModel
 ): GACartModel[] {
+  if (item.quantity > gaArea.capacity) {
+    throw new Error(CartErrorEnum.CAPACITY_EXCEEDED);
+  }
+
+  if (item.quantity > event.bookingLimit) {
+    throw new Error(CartErrorEnum.BOOKING_LIMIT_EXCEEDED);
+  }
+
+  if (item.quantity < 1) {
+    throw new Error(CartErrorEnum.QUANTITY_INVALID);
+  }
+
   const eventInCart = cartItems.find(
     (cartItem) => cartItem.eventId === item.eventId
   );

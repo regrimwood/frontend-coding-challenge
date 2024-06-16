@@ -362,4 +362,40 @@ describe("addGAItemToCart", () => {
       addGAItemToCart(item, cartItems, event, gaArea, price)
     ).toThrow(CartErrorEnum.GA_LIMIT_EXCEEDED);
   });
+
+  it("should throw an error if the quantity is less than 1", () => {
+    const item: TicketInputModel = {
+      eventId: 1,
+      gaAreaId: 1,
+      priceId: 1,
+      quantity: 0,
+    };
+
+    const event: EventModel = {
+      id: 1,
+      name: "Event 1",
+      bookingLimit: 15,
+      imageUrl: "",
+      type: EventTypeEnum.GA,
+      gaAreaIds: [1, 2],
+      allocatedSeatIds: [],
+    };
+
+    const gaArea: GeneralAdmissionAreaModel = {
+      id: 1,
+      name: "GA Area 1",
+      capacity: 15,
+      priceIds: [1, 2, 3],
+    };
+
+    const price: PriceModel = {
+      id: 1,
+      price: 10,
+      priceName: "Price 1",
+    };
+
+    expect(() =>
+      addGAItemToCart(item, cartItems, event, gaArea, price)
+    ).toThrow(CartErrorEnum.QUANTITY_INVALID);
+  });
 });

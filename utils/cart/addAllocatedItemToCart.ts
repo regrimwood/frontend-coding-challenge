@@ -20,6 +20,14 @@ export default function addAllocatedItemToCart(
     throw new Error(CartErrorEnum.SEAT_NOT_AVAILABLE);
   }
 
+  if (item.quantity > 1) {
+    throw new Error(CartErrorEnum.QUANTITY_EXCEEDED);
+  }
+
+  if (item.quantity < 1) {
+    throw new Error(CartErrorEnum.QUANTITY_INVALID);
+  }
+
   const eventInCart = cartItems.find(
     (cartItem) => cartItem.eventId === item.eventId
   );

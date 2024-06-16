@@ -99,17 +99,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(CartErrorEnum.DATA_NOT_FOUND);
       }
 
-      if (item.quantity > event.bookingLimit) {
-        throw new Error(CartErrorEnum.BOOKING_LIMIT_EXCEEDED);
-      }
-
       if (event.type === EventTypeEnum.GA && item.gaAreaId) {
         const gaArea = await getGAArea({ id: item.gaAreaId });
         if (!gaArea) {
           throw new Error(CartErrorEnum.DATA_NOT_FOUND);
-        }
-        if (item.quantity > gaArea.capacity) {
-          throw new Error(CartErrorEnum.CAPACITY_EXCEEDED);
         }
 
         const priceId = gaArea.priceIds.find((v) => v === item.priceId);

@@ -231,4 +231,82 @@ describe("addAllocatedItemToCart", () => {
       addAllocatedItemToCart(item, cartItems, event, seat, price)
     ).toThrow(CartErrorEnum.SEAT_NOT_AVAILABLE);
   });
+
+  it("should throw an error if the quantity is more than 1", () => {
+    const item: TicketInputModel = {
+      eventId: 1,
+      quantity: 2,
+      priceId: 1,
+      seatId: 3,
+    };
+
+    const event: EventModel = {
+      type: EventTypeEnum.ALLOCATED,
+      id: 1,
+      name: "Event 1",
+      bookingLimit: 5,
+      gaAreaIds: [],
+      allocatedSeatIds: [1, 2, 3],
+      imageUrl: "",
+    };
+
+    const seat: AllocatedSeatModel = {
+      id: 3,
+      seatColumn: 1,
+      seatRow: "C",
+      seatX: 1,
+      seatY: 3,
+      status: AllocatedSeatStatusEnum.AVAILABLE,
+      priceIds: [1],
+    };
+
+    const price: PriceModel = {
+      id: 1,
+      price: 10,
+      priceName: "Price 1",
+    };
+
+    expect(() =>
+      addAllocatedItemToCart(item, cartItems, event, seat, price)
+    ).toThrow(CartErrorEnum.QUANTITY_EXCEEDED);
+  });
+
+  it("should throw an error if the quantity is less than 1", () => {
+    const item: TicketInputModel = {
+      eventId: 1,
+      quantity: 0,
+      priceId: 1,
+      seatId: 3,
+    };
+
+    const event: EventModel = {
+      type: EventTypeEnum.ALLOCATED,
+      id: 1,
+      name: "Event 1",
+      bookingLimit: 5,
+      gaAreaIds: [],
+      allocatedSeatIds: [1, 2, 3],
+      imageUrl: "",
+    };
+
+    const seat: AllocatedSeatModel = {
+      id: 3,
+      seatColumn: 1,
+      seatRow: "C",
+      seatX: 1,
+      seatY: 3,
+      status: AllocatedSeatStatusEnum.AVAILABLE,
+      priceIds: [1],
+    };
+
+    const price: PriceModel = {
+      id: 1,
+      price: 10,
+      priceName: "Price 1",
+    };
+
+    expect(() =>
+      addAllocatedItemToCart(item, cartItems, event, seat, price)
+    ).toThrow(CartErrorEnum.QUANTITY_INVALID);
+  });
 });
