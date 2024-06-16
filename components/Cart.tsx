@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCart } from "./CartContext";
+import { TicketInputModel, useCart } from "./CartContext";
 import { EventTypeEnum } from "utils/models/EventTypeEnum";
 import Typography from "./Typography";
 import Transition from "./AnimationTransition";
@@ -9,18 +9,29 @@ import Button from "./Button";
 import CloseIcon from "../assets/icons/close.svg";
 
 export default function Cart() {
-  const { cartItems, cartOpen, setCartOpen } = useCart();
+  const [error, setError] = useState<string | undefined>(undefined);
+
+  const { cartItems, cartOpen, setCartOpen, removeFromCart } = useCart();
   const router = useRouter();
 
   useEffect(() => {
     const onRouteChangeStart = () => {
-      setCartOpen(false);
+      setCartOpen(true);
     };
     router.events.on("routeChangeStart", onRouteChangeStart);
     return () => {
       router.events.off("routeChangeStart", onRouteChangeStart);
     };
   }, [router.events, setCartOpen]);
+
+  const handleRemove = (item: TicketInputModel) => {
+    console.log(item);
+    try {
+      removeFromCart(item);
+    } catch (e: any) {
+      setError(e?.message ?? "Unable to remove item from cart");
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -44,7 +55,10 @@ export default function Cart() {
           >
             <div className="flex justify-between mb-10">
               <Typography variant="h2">Cart</Typography>
-              <button onClick={() => setCartOpen(false)}>
+              <button
+                onClick={() => setCartOpen(false)}
+                aria-label="Close cart"
+              >
                 <CloseIcon className="w-8 h-8" />
               </button>
             </div>
@@ -54,20 +68,55 @@ export default function Cart() {
                   <ul>
                     {cartItems.map((item) => (
                       <li key={item.eventId}>
-                        <Typography variant="h3">{item.eventName}</Typography>
-                        <ul>
+                        <Typography variant="h3" className="mb-3 text-violet">
+                          {item.eventName}
+                        </Typography>
+                        <ul className="flex flex-col gap-3">
                           {item.eventType === EventTypeEnum.GA ? (
                             item.gaAreas.map((gaArea) => (
-                              <li key={gaArea.gaAreaId}>
-                                <Typography variant="h4">
+                              <li
+                                key={gaArea.gaAreaId}
+                                className="bg-neonBlue bg-opacity-5 rounded-md pb-4 pt-3 px-4"
+                              >
+                                <Typography variant="h4" className="mb-3">
                                   {gaArea.gaAreaName}
                                 </Typography>
-                                <ul>
+                                <ul className="flex flex-col gap-3">
                                   {gaArea.tickets.map((ticket) => (
-                                    <li key={ticket.id}>
-                                      <Typography variant="body1">
-                                        {ticket.priceName} - {ticket.quantity}
-                                      </Typography>
+                                    <li
+                                      key={ticket.id}
+                                      className="py-2 px-3 rounded-md border-purple bg-purple bg-opacity-10 border-[1px] md:border-2"
+                                    >
+                                      <div className="mb-1 flex justify-between items-center">
+                                        <Typography
+                                          variant="body1"
+                                          className="font-medium"
+                                        >
+                                          {ticket.priceName}
+                                        </Typography>
+                                        <button
+                                          className="underline"
+                                          onClick={() =>
+                                            handleRemove({
+                                              eventId: item.eventId,
+                                              gaAreaId: gaArea.gaAreaId,
+                                              priceId: ticket.id,
+                                              quantity: ticket.quantity,
+                                            })
+                                          }
+                                        >
+                                          Remove x
+                                        </button>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <Typography variant="body1">
+                                          {ticket.quantity} ticket
+                                          {ticket.quantity > 2 ? "s" : ""}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                          ${ticket.price * ticket.quantity}
+                                        </Typography>
+                                      </div>
                                     </li>
                                   ))}
                                 </ul>

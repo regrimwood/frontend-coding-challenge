@@ -244,7 +244,6 @@ export default function GAEventDetails({
   const isMd = useMediaQuery(`(min-width: ${tailwindConfig.theme.screens.md})`);
 
   useEffect(() => {
-    console.log(gaAreas);
     if (gaAreas?.length) {
       const prices = gaAreas.flatMap((area) => area.prices);
       const lowestPrice = prices.reduce((acc, price) => {
@@ -262,7 +261,7 @@ export default function GAEventDetails({
       <AnimatePresence mode="wait">
         {loading && (
           <Transition key="loading">
-            <Spinner class="text-violet" />
+            <Spinner className="text-violet" />
           </Transition>
         )}
         {!loading && gaAreas && (
