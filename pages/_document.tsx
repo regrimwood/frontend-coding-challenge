@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import tailwindConfig from "tailwind.config";
 
 export default class MyDocument extends Document {
   render() {
@@ -14,6 +15,10 @@ export default class MyDocument extends Document {
           <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
             rel="stylesheet"
+          />
+          <meta
+            name="theme-color"
+            content={tailwindConfig.theme.extend.colors.black}
           />
         </Head>
         <body>
