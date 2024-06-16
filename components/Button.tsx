@@ -1,7 +1,8 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import tailwindConfig from "tailwind.config";
 import alpha from "utils/alpha";
+import Spinner from "../assets/icons/spinner.svg";
 
 export default function Button({
   children,
@@ -10,6 +11,7 @@ export default function Button({
   selected,
   href,
   reverse,
+  loading,
 }: {
   children: React.ReactNode;
   onClick?: () => void;
@@ -17,6 +19,7 @@ export default function Button({
   selected?: boolean;
   href?: string;
   reverse?: boolean;
+  loading?: boolean;
 }) {
   const { neonBlue, white } = tailwindConfig.theme.extend.colors;
 
@@ -34,13 +37,20 @@ export default function Button({
   const button = (
     <motion.button
       onClick={onClick}
-      className={`font-medium text-sm md:text-base py-2 px-4 md:px-6 rounded-md border-neonBlue border-[1px] md:border-2 ${className}`}
+      className={`relative font-medium text-sm md:text-base py-2 px-4 md:px-6 rounded-md border-neonBlue border-[1px] md:border-2 ${className}`}
       initial="unselected"
-      whileHover="selected"
+      whileHover={loading ? undefined : "selected"}
       animate={selected ? "selected" : "unselected"}
       variants={variants}
+      disabled={loading}
     >
-      {children}
+      <motion.div
+        className="absolute h-full w-full top-0 left-0 flex items-center justify-center"
+        animate={{ opacity: loading ? 1 : 0 }}
+      >
+        <Spinner className="w-5 h-5" />
+      </motion.div>
+      <motion.div animate={{ opacity: loading ? 0 : 1 }}>{children}</motion.div>
     </motion.button>
   );
 
