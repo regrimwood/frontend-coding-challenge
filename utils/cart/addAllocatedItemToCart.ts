@@ -20,11 +20,7 @@ export default function addAllocatedItemToCart(
   );
 
   if (eventInCart) {
-    if (
-      eventInCart.seats.find(
-        (s) => s.seatColumn === seat.seatColumn && s.seatRow === seat.seatRow
-      )
-    ) {
+    if (eventInCart.seats.find((v) => v.seatId === seat.id)) {
       throw new Error(CartErrorEnum.SEAT_ALREADY_IN_CART);
     }
 

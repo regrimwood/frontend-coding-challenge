@@ -133,8 +133,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const newCart = [...allocatedCartItems, ...newItems];
         setCartItems([...allocatedCartItems, ...newItems]);
         localStorage.setItem("cartItems", JSON.stringify(newCart));
-      } else {
-        const seat = await getSeat({ id: item.priceId });
+      } else if (item.seatId) {
+        const seat = await getSeat({ id: item.seatId });
         if (!seat) {
           throw new Error(CartErrorEnum.DATA_NOT_FOUND);
         }

@@ -67,6 +67,7 @@ function SeatPopup({
             key={price.id}
             className="text-sm font-normal w-full md:border-[1px] md:px-3"
             onClick={() => handleAddToCart(price.id)}
+            loading={loading}
           >
             <span className="w-full flex justify-between text-sm">
               <span>{price.priceName}</span>
@@ -74,6 +75,13 @@ function SeatPopup({
             </span>
           </Button>
         ))}
+        <AnimatePresence>
+          {error && (
+            <Transition key="error" className="text-red-500 text-sm">
+              {error}
+            </Transition>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

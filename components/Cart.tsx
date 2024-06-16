@@ -66,15 +66,15 @@ export default function Cart() {
             <AnimatePresence mode="wait">
               {cartItems?.length > 0 ? (
                 <Transition key="cart-items" className="flex flex-col h-full">
-                  <ul className="flex-1">
+                  <ul className="flex-1 flex flex-col gap-5">
                     {cartItems.map((item) => (
                       <li key={item.eventId}>
                         <Typography variant="h3" className="mb-3 text-violet">
                           {item.eventName}
                         </Typography>
-                        <ul className="flex flex-col gap-3">
-                          {item.eventType === EventTypeEnum.GA ? (
-                            item.gaAreas.map((gaArea) => (
+                        {item.eventType === EventTypeEnum.GA ? (
+                          <ul className="flex flex-col gap-3">
+                            {item.gaAreas.map((gaArea) => (
                               <li
                                 key={gaArea.gaAreaId}
                                 className="bg-neonBlue bg-opacity-5 rounded-md pb-4 pt-3 px-4"
@@ -125,20 +125,64 @@ export default function Cart() {
                                   ))}
                                 </ul>
                               </li>
-                            ))
-                          ) : (
-                            <li>
-                              <Typography variant="body1">
-                                Allocated Seating
-                              </Typography>
-                            </li>
-                          )}
-                        </ul>
+                            ))}
+                          </ul>
+                        ) : (
+                          <ul className="bg-neonBlue bg-opacity-5 rounded-md pb-4 pt-3 px-4 flex flex-col gap-4">
+                            {item.seats.map((seat) => (
+                              <li
+                                key={seat.id}
+                                className="py-2 px-3 rounded-md border-purple bg-purple bg-opacity-10 border-[1px] md:border-2"
+                              >
+                                <div className="mb-1 flex justify-between items-center">
+                                  <Typography
+                                    variant="body1"
+                                    className="font-medium"
+                                  >
+                                    {seat.priceName}
+                                  </Typography>
+                                  <button
+                                    className="underline"
+                                    onClick={() =>
+                                      handleRemove({
+                                        eventId: item.eventId,
+                                        seatId: seat.seatId,
+                                        priceId: seat.id,
+                                        quantity: 1,
+                                      })
+                                    }
+                                  >
+                                    Remove
+                                    <CloseIcon className="w-4 h-4 inline-block ml-1" />
+                                  </button>
+                                </div>
+                                <div className="flex justify-between">
+                                  <Typography variant="body1">
+                                    {seat.seatRow}
+                                    {seat.seatColumn}
+                                  </Typography>
+                                  <Typography variant="body1">
+                                    {formatToNZD(seat.price)}
+                                  </Typography>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-auto pt-5">
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="mt-auto pt-5 flex flex-col gap-4">
+                    <AnimatePresence>
+                      {error && (
+                        <Transition key="error">
+                          <Typography variant="body2" className="text-red-500">
+                            {error}
+                          </Typography>
+                        </Transition>
+                      )}
+                    </AnimatePresence>
+                    <div className="flex items-center justify-between">
                       <Typography variant="body1" className="font-medium">
                         Subtotal:
                       </Typography>
