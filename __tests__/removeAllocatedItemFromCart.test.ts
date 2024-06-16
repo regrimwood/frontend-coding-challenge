@@ -1,4 +1,4 @@
-import { AllocatedCartModel, GACartModel } from "../components/CartContext";
+import { AllocatedCartModel } from "../components/CartContext";
 import { EventTypeEnum } from "utils/models/EventTypeEnum";
 import { CartErrorEnum } from "utils/models/CartErrorEnum";
 import removeAllocatedItemFromCart from "utils/cart/removeAllocatedItemFromCart";

@@ -31,8 +31,12 @@ export default function addGAItemToCart(
 
   if (eventInCart) {
     const totalTicketsForEvent = eventInCart.gaAreas.reduce(
-      (acc, gaArea) =>
-        acc + gaArea.tickets.reduce((acc, ticket) => acc + ticket.quantity, 0),
+      (acc, area) =>
+        acc +
+        area.tickets.reduce(
+          (ticketAcc, ticket) => ticketAcc + ticket.quantity,
+          0
+        ),
       0
     );
 
@@ -41,7 +45,7 @@ export default function addGAItemToCart(
     }
 
     const gaAreaInCart = eventInCart.gaAreas.find(
-      (gaArea) => gaArea.gaAreaId === item.gaAreaId
+      (area) => area.gaAreaId === item.gaAreaId
     );
 
     const ticketInCart = gaAreaInCart?.tickets.find(
@@ -68,11 +72,11 @@ export default function addGAItemToCart(
           cartItem.eventId === item.eventId
             ? {
                 ...cartItem,
-                gaAreas: eventInCart.gaAreas.map((gaArea) =>
-                  gaArea.gaAreaId === item.gaAreaId
+                gaAreas: eventInCart.gaAreas.map((area) =>
+                  area.gaAreaId === item.gaAreaId
                     ? {
-                        ...gaArea,
-                        tickets: gaArea.tickets.map((ticket) =>
+                        ...area,
+                        tickets: area.tickets.map((ticket) =>
                           ticket.id === item.priceId
                             ? {
                                 ...ticket,
@@ -81,7 +85,7 @@ export default function addGAItemToCart(
                             : ticket
                         ),
                       }
-                    : gaArea
+                    : area
                 ),
               }
             : cartItem
@@ -91,16 +95,16 @@ export default function addGAItemToCart(
           cartItem.eventId === item.eventId
             ? {
                 ...cartItem,
-                gaAreas: eventInCart.gaAreas.map((gaArea) =>
-                  gaArea.gaAreaId === item.gaAreaId
+                gaAreas: eventInCart.gaAreas.map((area) =>
+                  area.gaAreaId === item.gaAreaId
                     ? {
-                        ...gaArea,
+                        ...area,
                         tickets: [
-                          ...gaArea.tickets,
+                          ...area.tickets,
                           { ...price, quantity: item.quantity },
                         ],
                       }
-                    : gaArea
+                    : area
                 ),
               }
             : cartItem
