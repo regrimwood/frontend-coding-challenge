@@ -6,8 +6,11 @@ import useMediaQuery from "utils/hooks/useMediaQuery";
 import HeaderLogo from "../assets/icons/headerLogo.svg";
 import UserIcon from "../assets/icons/user.svg";
 import CartIcon from "../assets/icons/cart.svg";
+import { useCart } from "./CartContext";
 
 export default function Navbar() {
+  const { setCartOpen } = useCart();
+
   const [scrollYProgress, setScrollYProgress] = useState(0);
   const { scrollY } = useScroll();
 
@@ -40,10 +43,17 @@ export default function Navbar() {
         <HeaderLogo className="w-20 h-12 md:w-24 md:h-16" />
       </Link>
       <div className="relative z-10 flex gap-4 items-center">
-        <button className="w-8 h-8 md:w-12 md:h-12 flex justify-center items-center">
+        <button
+          aria-label="Open Cart"
+          onClick={() => setCartOpen(true)}
+          className="w-8 h-8 md:w-12 md:h-12 flex justify-center items-center"
+        >
           <CartIcon className="text-white w-5 h-5 md:w-6 md:h-6" />
         </button>
-        <button className="w-8 h-8 md:w-12 md:h-12 flex justify-center items-center">
+        <button
+          aria-label="Account"
+          className="w-8 h-8 md:w-12 md:h-12 flex justify-center items-center"
+        >
           <UserIcon className="text-white w-5 h-5 md:w-7 md:h-7" />
         </button>
       </div>

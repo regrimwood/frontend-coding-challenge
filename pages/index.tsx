@@ -49,6 +49,7 @@ const Home: NextPage = () => {
             >
               <div ref={ref} className="p-6 md:p-10">
                 {/* I think AnimatePresence might have the same bug as react spring's useTransition where a quick state change will cause nothing to animate in.. */}
+                {/* TODO: workaround? */}
                 <AnimatePresence mode="wait">
                   {loading && (
                     <Transition
