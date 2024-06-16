@@ -45,16 +45,14 @@ const Home: NextPage = () => {
           >
             <motion.div
               animate={{ height: clientHeight }}
-              className="rounded-xl bg-white bg-opacity-75 mix-blend-plus-lighter mt-5 border-[1px] border-opacity-75 border-lightPurple"
+              className="relative rounded-xl bg-white bg-opacity-75 mix-blend-plus-lighter mt-5 border-[1px] border-opacity-75 border-lightPurple"
             >
-              <div ref={ref} className="p-6 md:p-10">
-                {/* I think AnimatePresence might have the same bug as react spring's useTransition where a quick state change will cause nothing to animate in.. */}
-                {/* TODO: workaround? */}
-                <AnimatePresence mode="wait">
+              <div ref={ref} className="p-6 md:p-10 min-h-36 relative">
+                <AnimatePresence>
                   {loading && (
                     <Transition
                       key="loading"
-                      className="flex items-center justify-center h-36"
+                      className="left-0 right-0 top-0 bottom-0 m-auto flex items-center justify-center absolute"
                     >
                       <Spinner class="text-violet" />
                     </Transition>
@@ -75,7 +73,7 @@ const Home: NextPage = () => {
                     </Transition>
                   )}
                   {!loading && events.length === 0 && (
-                    <Transition key="no-events" className="h-96">
+                    <Transition key="no-events" className="h-96 absolute">
                       <Typography variant="h3">No events found!</Typography>
                     </Transition>
                   )}

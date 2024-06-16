@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import tailwindConfig from "tailwind.config";
 import { EventModel } from "utils/models/EventModel";
 import useGetGaAreas from "utils/hooks/useGetGaAreas";
 import Button from "./Button";
-import { AnimatePresence } from "framer-motion";
 import Transition, { transitionVariants } from "./AnimationTransition";
 import Spinner from "../assets/icons/spinner.svg";
 import Typography from "./Typography";
 import { PriceModel } from "utils/models/PriceModel";
 import useMediaQuery from "utils/hooks/useMediaQuery";
-import tailwindConfig from "tailwind.config";
 import Select from "./Select";
 import { useCart } from "./CartContext";
 import formatToNZD from "utils/formatToNZD";
@@ -258,10 +257,13 @@ export default function GAEventDetails({
   }, [gaAreas]);
 
   return (
-    <div>
-      <AnimatePresence mode="wait">
+    <div className="relative">
+      <AnimatePresence>
         {loading && (
-          <Transition key="loading">
+          <Transition
+            key="loading"
+            className="absolute w-full flex justify-center"
+          >
             <Spinner className="text-violet" />
           </Transition>
         )}

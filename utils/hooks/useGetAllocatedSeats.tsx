@@ -12,7 +12,6 @@ export default function useGetAllocatedSeats({ ids }: { ids: number[] }) {
 
   useEffect(() => {
     setLoading(true);
-    let timeoutId: ReturnType<typeof setTimeout>;
 
     const getSeats = async () => {
       const newSeats = [];
@@ -60,11 +59,10 @@ export default function useGetAllocatedSeats({ ids }: { ids: number[] }) {
       }
 
       setSeats(newSeats);
-      timeoutId = setTimeout(() => setLoading(false), 200);
+      setLoading(false);
     };
 
     getSeats();
-    return () => clearTimeout(timeoutId);
   }, [ids]);
 
   return { seats, loading };

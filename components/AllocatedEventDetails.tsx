@@ -70,7 +70,7 @@ function SeatPopup({
             onClick={() => handleAddToCart(price.id)}
             loading={loading}
           >
-            <span className="w-full flex justify-between text-sm">
+            <span className="w-full flex justify-between text-sm gap-2">
               <span>{price.priceName}</span>
               <span>{formatToNZD(price.price)}</span>
             </span>
@@ -185,20 +185,20 @@ export default function AllocatedEventDetails({
   };
 
   return (
-    <div className="bg-white rounded-lg px-3 py-5 md:px-8 md:py-8">
+    <div className="relative bg-white rounded-lg px-3 py-5 md:px-8 md:py-8 min-h-56">
       <Typography variant="h3" className="mb-6">
         Select seats
       </Typography>
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {loading && (
           <Transition
             key="loading"
-            className="flex items-center justify-center"
+            className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center"
           >
             <Spinner className="text-violet" />
           </Transition>
         )}
-        {!loading && seats && (
+        {!loading && seats.length > 0 && (
           <Transition key="content">
             <Typography variant="h4" className="mb-5 text-center">
               STAGE
