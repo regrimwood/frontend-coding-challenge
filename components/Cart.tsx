@@ -113,7 +113,7 @@ export default function Cart() {
                                       <div className="flex justify-between">
                                         <Typography variant="body1">
                                           {ticket.quantity} ticket
-                                          {ticket.quantity > 2 ? "s" : ""}
+                                          {ticket.quantity > 1 ? "s" : ""}
                                         </Typography>
                                         <Typography variant="body1">
                                           {formatToNZD(
