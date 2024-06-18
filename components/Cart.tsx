@@ -1,13 +1,124 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { TicketInputModel, useCart } from "./CartContext";
+import {
+  AllocatedCartModel,
+  GACartModel,
+  TicketInputModel,
+  useCart,
+} from "./CartContext";
 import { EventTypeEnum } from "utils/models/EventTypeEnum";
 import Typography from "./Typography";
 import Transition from "./AnimationTransition";
 import Button from "./Button";
 import CloseIcon from "../assets/icons/close.svg";
 import formatToNZD from "utils/formatToNZD";
+
+function CartGAArea({
+  cartItem,
+  handleRemove,
+}: {
+  cartItem: GACartModel;
+  handleRemove: (item: TicketInputModel) => void;
+}) {
+  return (
+    <ul className="flex flex-col gap-3">
+      {cartItem.gaAreas.map((gaArea) => (
+        <li
+          key={gaArea.gaAreaId}
+          className="bg-neonBlue bg-opacity-5 rounded-md pb-4 pt-3 px-4"
+        >
+          <Typography variant="h4" className="mb-3">
+            {gaArea.gaAreaName}
+          </Typography>
+          <ul className="flex flex-col gap-3">
+            {gaArea.tickets.map((ticket) => (
+              <li
+                key={ticket.id}
+                className="py-2 px-3 rounded-md border-purple bg-purple bg-opacity-10 border-[1px] md:border-2"
+              >
+                <div className="mb-1 flex justify-between items-center">
+                  <Typography variant="body1" className="font-medium">
+                    {ticket.priceName}
+                  </Typography>
+                  <button
+                    className="underline"
+                    onClick={() =>
+                      handleRemove({
+                        eventId: cartItem.eventId,
+                        gaAreaId: gaArea.gaAreaId,
+                        priceId: ticket.id,
+                        quantity: ticket.quantity,
+                      })
+                    }
+                  >
+                    Remove
+                    <CloseIcon className="w-4 h-4 inline-block ml-1" />
+                  </button>
+                </div>
+                <div className="flex justify-between">
+                  <Typography variant="body1">
+                    {ticket.quantity} ticket
+                    {ticket.quantity > 1 ? "s" : ""}
+                  </Typography>
+                  <Typography variant="body1">
+                    {formatToNZD(ticket.price * ticket.quantity)}
+                  </Typography>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function CartAllocatedSeats({
+  cartItem,
+  handleRemove,
+}: {
+  cartItem: AllocatedCartModel;
+  handleRemove: (item: TicketInputModel) => void;
+}) {
+  return (
+    <ul className="bg-neonBlue bg-opacity-5 rounded-md pb-4 pt-3 px-4 flex flex-col gap-4">
+      {cartItem.seats.map((seat) => (
+        <li
+          key={seat.id}
+          className="py-2 px-3 rounded-md border-purple bg-purple bg-opacity-10 border-[1px] md:border-2"
+        >
+          <div className="mb-1 flex justify-between items-center">
+            <Typography variant="body1" className="font-medium">
+              {seat.priceName}
+            </Typography>
+            <button
+              className="underline"
+              onClick={() =>
+                handleRemove({
+                  eventId: cartItem.eventId,
+                  seatId: seat.seatId,
+                  priceId: seat.id,
+                  quantity: 1,
+                })
+              }
+            >
+              Remove
+              <CloseIcon className="w-4 h-4 inline-block ml-1" />
+            </button>
+          </div>
+          <div className="flex justify-between">
+            <Typography variant="body1">
+              {seat.seatRow}
+              {seat.seatColumn}
+            </Typography>
+            <Typography variant="body1">{formatToNZD(seat.price)}</Typography>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export default function Cart() {
   const [error, setError] = useState<string | undefined>(undefined);
@@ -73,101 +184,15 @@ export default function Cart() {
                           {item.eventName}
                         </Typography>
                         {item.eventType === EventTypeEnum.GA ? (
-                          <ul className="flex flex-col gap-3">
-                            {item.gaAreas.map((gaArea) => (
-                              <li
-                                key={gaArea.gaAreaId}
-                                className="bg-neonBlue bg-opacity-5 rounded-md pb-4 pt-3 px-4"
-                              >
-                                <Typography variant="h4" className="mb-3">
-                                  {gaArea.gaAreaName}
-                                </Typography>
-                                <ul className="flex flex-col gap-3">
-                                  {gaArea.tickets.map((ticket) => (
-                                    <li
-                                      key={ticket.id}
-                                      className="py-2 px-3 rounded-md border-purple bg-purple bg-opacity-10 border-[1px] md:border-2"
-                                    >
-                                      <div className="mb-1 flex justify-between items-center">
-                                        <Typography
-                                          variant="body1"
-                                          className="font-medium"
-                                        >
-                                          {ticket.priceName}
-                                        </Typography>
-                                        <button
-                                          className="underline"
-                                          onClick={() =>
-                                            handleRemove({
-                                              eventId: item.eventId,
-                                              gaAreaId: gaArea.gaAreaId,
-                                              priceId: ticket.id,
-                                              quantity: ticket.quantity,
-                                            })
-                                          }
-                                        >
-                                          Remove
-                                          <CloseIcon className="w-4 h-4 inline-block ml-1" />
-                                        </button>
-                                      </div>
-                                      <div className="flex justify-between">
-                                        <Typography variant="body1">
-                                          {ticket.quantity} ticket
-                                          {ticket.quantity > 1 ? "s" : ""}
-                                        </Typography>
-                                        <Typography variant="body1">
-                                          {formatToNZD(
-                                            ticket.price * ticket.quantity
-                                          )}
-                                        </Typography>
-                                      </div>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </li>
-                            ))}
-                          </ul>
+                          <CartGAArea
+                            cartItem={item}
+                            handleRemove={handleRemove}
+                          />
                         ) : (
-                          <ul className="bg-neonBlue bg-opacity-5 rounded-md pb-4 pt-3 px-4 flex flex-col gap-4">
-                            {item.seats.map((seat) => (
-                              <li
-                                key={seat.id}
-                                className="py-2 px-3 rounded-md border-purple bg-purple bg-opacity-10 border-[1px] md:border-2"
-                              >
-                                <div className="mb-1 flex justify-between items-center">
-                                  <Typography
-                                    variant="body1"
-                                    className="font-medium"
-                                  >
-                                    {seat.priceName}
-                                  </Typography>
-                                  <button
-                                    className="underline"
-                                    onClick={() =>
-                                      handleRemove({
-                                        eventId: item.eventId,
-                                        seatId: seat.seatId,
-                                        priceId: seat.id,
-                                        quantity: 1,
-                                      })
-                                    }
-                                  >
-                                    Remove
-                                    <CloseIcon className="w-4 h-4 inline-block ml-1" />
-                                  </button>
-                                </div>
-                                <div className="flex justify-between">
-                                  <Typography variant="body1">
-                                    {seat.seatRow}
-                                    {seat.seatColumn}
-                                  </Typography>
-                                  <Typography variant="body1">
-                                    {formatToNZD(seat.price)}
-                                  </Typography>
-                                </div>
-                              </li>
-                            ))}
-                          </ul>
+                          <CartAllocatedSeats
+                            cartItem={item}
+                            handleRemove={handleRemove}
+                          />
                         )}
                       </li>
                     ))}
